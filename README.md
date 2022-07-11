@@ -2,51 +2,24 @@
 
 <table width="100%" align="center">
  <tr width="100%" align="center">
-    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/new/main/amd_logo.png" width=""/><h1>Deep Learning Guide </h1>
+    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/amd_logo.png" width=""/><h1>Deep Learning Guide </h1>
  </tr>
 </table>
 
-![](RackMultipart20220711-1-vf5plv_html_812bbe318966b350.png)
-
-|
-# **Deep Learning Guide**
- |
-| --- |
-
-|
- | Publication # | **1.0** | Revision: | **0607** |
- |
- |
- |
- |
- |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-|
- | Issue Date: | **June 2022** |
- |
- |
- |
- |
- |
- |
- |
-|
- |
- |
- |
- |
- |
- |
- |
- |
- |
- |
-
-© 2021-22 Advanced Micro Devices, Inc. All Rights Reserved.
+<table>
+ <tr>
+  <td> Publication: 1.0    Revision: 0607 </td>
+ </tr>
+ <tr>
+  <td> Issue Date: June 2022 </td>
+ </tr>
+ </table>
+ 
+ © 2021-22 Advanced Micro Devices, Inc. All Rights Reserved.
 
 [This page left blank intentionally]
 
-**Table of Contents**
+# Table of Contents
 
 **[Chapter 1](#_Toc105523387)****Introduction to Machine Learning and Deep Learning 4**
 
@@ -108,9 +81,9 @@
 
 **[Chapter 7](#_Toc105523416)****References 61**
 
-## Chapter 1Introduction to Machine Learning and Deep Learning
+# Chapter 1 Introduction to Machine Learning and Deep Learning
 
-## 1.1Machine Learning
+## 1.1 Machine Learning
 
 ![](RackMultipart20220711-1-vf5plv_html_e871cc31ce81b318.jpg)
 
@@ -118,7 +91,7 @@ Machine Learning (ML) is a field within Artificial Intelligence (AI) that focuse
 
 Within ML, this guide primarily focuses on supervised learning algorithms. The training data consists of inputs and desired outputs in the model during the &quot;training phase.&quot; The training algorithm learns the underlying model parameters through an iterative optimization process. During the evaluation phase, the model topology with the trained model parameters from the learned agent is evaluated based on its performance against new data.
 
-## 1.2Deep Learning
+## 1.2 Deep Learning
 
 ![](RackMultipart20220711-1-vf5plv_html_3eb59412595c8d2e.jpg)
 
@@ -132,7 +105,7 @@ Common examples of Deep Learning include:
 - Medical: Cancer research, such as learning to detect melanoma in photos.
 - Smart Home: Smart speakers use intelligent personal assistants and voice-recognition algorithms to comprehend and respond to unique users&#39; verbal requests.
 
-## 1.3AMD Contribution to Machine Learning and Deep Learning
+## 1.3 AMD Contribution to Machine Learning and Deep Learning
 
 Machine Learning (ML) and Deep Learning (DL) intelligent applications that respond with human-like reflexes require an enormous amount of computer processing power.
 
@@ -142,17 +115,17 @@ For example, in an autonomous driving scenario, the DL algorithm might be requir
 
 The performance of AMD hardware and associated software also offers excellent benefits to developing and testing ML and DL systems. Today, a computing platform built with the latest AMD technologies (AMD EPYC™ CPUs and Radeon Instinct™ GPUs) can develop and test a new intelligent application in days or weeks, a process that used to take years.
 
-## Chapter 2Prerequisites
+# Chapter 2 Prerequisites
 
-## 2.1Hardware prerequisites
+## 2.1 Hardware prerequisites
 
 Confirm that the installation hardware supports the ROCm™ stack.
 
 _[https://github.com/RadeonOpenCompute/ROCm#Hardware-and-Software-Support](https://github.com/RadeonOpenCompute/ROCm#Hardware-and-Software-Support)_
 
-## 2.2ROCm Installation Guide
+## 2.2 ROCm Installation Guide
 
-### 2.2.1ROCm User-space and Kernel Driver Compatibility
+### 2.2.1 ROCm User-space and Kernel Driver Compatibility
 
 ROCm user-space API is guaranteed to be compatible with certain older and newer ROCm base driver installations. This matrix should be considered when running a Docker container with a different version of ROCm than installed on the host.
 
@@ -176,7 +149,7 @@ Kernel space compatibility meets the following condition:
 
 - Userspace works with -/+ 2 releases of kernel space.
 
-### 2.2.2ROCm Framework Compatibility
+### 2.2.2 ROCm Framework Compatibility
 
 The ROCm release supports the most recent and two prior releases of PyTorch and TensorFlow.
 
@@ -204,17 +177,17 @@ Legends:
 
  ![](RackMultipart20220711-1-vf5plv_html_e9ba59a33a594f74.png)
 
-### 2.2.3Installation
+### 2.2.3 Installation
 
 Refer to the latest ROCm installation guide.
 
-### 2.2.4Verifying ROCm Installation
+### 2.2.4 Verifying ROCm Installation
 
 You may verify the ROCm installation using the &#39;rocminfo&#39; command.
 
 $ /opt/rocm-\&lt;version\&gt;/bin/rocminfo
 
-## Chapter 3Frameworks Installation Guide
+# Chapter 3 Frameworks Installation Guide
 
 ## 3.1 PyTorch
 
@@ -222,11 +195,11 @@ $ /opt/rocm-\&lt;version\&gt;/bin/rocminfo
 
 PyTorch is an open-source Machine Learning Python library, primarily differentiated by Tensor computing with GPU acceleration and a type-based automatic differentiation. Other advanced features include support for distributed training, native ONNX support, C++ frontend, ability to deploy at scale using TorchServe, and production-ready deployment mechanism through TorchScript.
 
-### 3.1.1Installing PyTorch
+### 3.1.1 Installing PyTorch
 
 To install ROCm™ on bare-metal, follow the instructions in section _[2.2 ROCm installation guide](#_ROCm_Installation_guide)_. The recommended option to get a PyTorch environment is through Docker. However, installing the PyTorch wheel package on bare metal is also supported.
 
-#### 3.1.1.1Option 1 (Recommended): Use Docker Image with PyTorch Pre-installed
+#### 3.1.1.1 Option 1 (Recommended): Use Docker Image with PyTorch Pre-installed
 
 Using Docker gives you portability and access to a prebuilt Docker container that has been rigorously tested within AMD. This might also save on the compilation time and should perform exactly as it did when tested, without facing potential installation issues.
 
@@ -246,7 +219,7 @@ docker run -it --cap-add=SYS\_PTRACE --security-opt seccomp=unconfined --device=
 
 This will automatically download the image if it does not exist on the host. You can also pass -v argument to mount any data directories from the host onto the container.
 
-#### 3.1.1.2Option 2: Install PyTorch Using Wheels Package
+#### 3.1.1.2 Option 2: Install PyTorch Using Wheels Package
 
 PyTorch supports the ROCm platform by providing tested wheel packages. To access this feature, refer to _[https://pytorch.org/get-started/locally/](https://pytorch.org/get-started/locally/)_and choose the &quot;ROCm&quot; compute platform.
 
@@ -276,7 +249,7 @@ pip3 install wheel setuptools
 
 pip3 install --pre torch torchvision --extra-index-url https://download.pytorch.org/whl/nightly/rocm5.1.1/
 
-#### 3.1.1.3Option 3: Install PyTorch Using PyTorch ROCm Base Docker Image
+#### 3.1.1.3 Option 3: Install PyTorch Using PyTorch ROCm Base Docker Image
 
 A pre-built base Docker image is used to build PyTorch in this option. The base Docker has all dependencies installed, including ROCm, torch-vision, Conda packages, and the compiler tool-chain. Additionally, a particular environment flag (BUILD\_ENVIRONMENT) is set, and the build scripts utilize that to determine the build environment configuration.
 
@@ -331,7 +304,7 @@ python3 tools/amd\_build/build\_amd.py
 
 USE\_ROCM=1 MAX\_JOBS=4 python3 setup.py install –user
 
-#### 3.1.1.4Option 4: Install Using PyTorch Upstream Docker File
+#### 3.1.1.4 Option 4: Install Using PyTorch Upstream Docker File
 
 Instead of using a prebuilt base Docker image, a custom base Docker image can be built using scripts from the PyTorch repository. This will utilize a standard Docker image from operating system maintainers and install all the dependencies required to build PyTorch, including ROCm, torch-vision, Conda packages, and the compiler tool chain.
 
@@ -456,15 +429,15 @@ pip3 install -r requirements.txt
 
 python3 main.py
 
-## 3.2TensorFlow
+## 3.2 TensorFlow
 
 ![](RackMultipart20220711-1-vf5plv_html_b514687c3cb3039f.png)
 
 TensorFlow is an open-source library for solving problems of Machine Learning, Deep Learning, and Artificial Intelligence. It can be used to solve a large number of problems across different sectors and industries but primarily focuses on training and inference in neural networks. It is one of the most popular and in-demand frameworks, and very active in terms of open-source contribution and development.
 
-### 3.2.1­­­­­­­­­Installing TensorFlow
+### 3.2.1 ­­­­­­­­­Installing TensorFlow
 
-#### 3.2.1.1Option 1: Install TensorFlow using Docker image
+#### 3.2.1.1 Option 1: Install TensorFlow using Docker image
 
 To install ROCm on bare-metal, follow the instructions in Section 2.2_[ROCm Installation guide](#_ROCm_Installation_guide)_. The recommended option to get a TensorFlow environment is through Docker.
 
@@ -480,7 +453,7 @@ docker pull rocm/tensorflow:latest
 
 docker run -it --network=host --device=/dev/kfd --device=/dev/dri --ipc=host --shm-size 16G --group-add video --cap-add=SYS\_PTRACE --security-opt seccomp=unconfined rocm/tensorflow:latest
 
-#### 3.2.1.2Option 2: Install TensorFlow Using Wheels Package
+#### 3.2.1.2 Option 2: Install TensorFlow Using Wheels Package
 
 To install TensorFlow using the wheels package, follow these commands:
 
@@ -550,13 +523,13 @@ python3 -c &#39;import tensorflow&#39; 2\&gt; /dev/null &amp;&amp; echo &#39;Suc
 
 _[https://github.com/ROCmSoftwarePlatform/tensorflow-upstream/blob/develop-upstream/rocm\_docs/tensorflow-rocm-release.md](https://github.com/ROCmSoftwarePlatform/tensorflow-upstream/blob/develop-upstream/rocm_docs/tensorflow-rocm-release.md)_
 
-### 3.2.2Test the TensorFlow Installation
+### 3.2.2 Test the TensorFlow Installation
 
 To test the installation of TensorFlow, run the container image as specified in the previous section - _[Installing TensorFlow](#_Installing_TensorFlow)_. Ensure you access the Python shell in the Docker container.
 
 #python3 -c &#39;import tensorflow&#39; 2\&gt; /dev/null &amp;&amp; echo &#39;Success&#39; || echo &#39;Failure&#39;
 
-### 3.2.3Run a Basic TensorFlow Example
+### 3.2.3 Run a Basic TensorFlow Example
 
 The TensorFlow examples repository provides basic examples that exercise the functionality of the framework. MNIST database is a collection of handwritten digits that may be used to train a Convolutional Neural Network for handwriting recognition.
 
@@ -572,7 +545,7 @@ Follow these steps:
 
 #python mnist\_tf.py
 
-## Chapter 4Deep Learning Training
+# Chapter 4 Deep Learning Training
 
 Deep Learning models are designed to capture the complexity of the problem and the underlying data. These models are designed to be &quot;deep,&quot; in that they comprise multiple component layers. Training is the process of finding the best parameters for each model layer to achieve a well-defined objective.
 
@@ -597,15 +570,15 @@ Training is different from Inference, particularly from the hardware perspective
 | Data for training is available on the disk before the training process and is generally large. The training performance is measured in how fast the data batches can be processed. | Inference data usually arrives stochastically, which may be batched to improve performance. Performance of inference is usually measured in throughput speed to process the batch of data and the delay in responding to the input (latency). |
 | Different quantization data types are normally chosen between training (FP32, BF16) and inference (FP16, INT8). The computation hardware has different specializations on different datatypes, leading to improvement in performance if a faster datatype can be selected for the corresponding task. |
 
-### 4.1.1Case Studies
+### 4.1.1 Case Studies
 
-#### 4.1.1.1Inception v3 with PyTorch
+#### 4.1.1.1 Inception v3 with PyTorch
 
 Convolution neural networks are forms of an artificial neural network commonly used for image processing. One of the core layers of such a network is the convolutional layer, which convolves the input with a weight tensor and passes the result to the next layer. Inception-v3 [1] is an architectural development over the ImageNet competition-winning entry, AlexNet, using deeper and wider networks while attempting to meet computational and memory budgets.
 
 The implementation uses PyTorch as a framework. This case study utilizes torchvision [2], a repository of popular datasets and model architectures, for obtaining the model. Torchvision also provides pre-trained weights as a starting point to develop new models or fine-tune the model for a new task.
 
-##### 4.1.1.1.1Evaluating a Pre-trained Model
+##### 4.1.1.1.1 Evaluating a Pre-trained Model
 
 With the Inception-v3 model, a simple image classification task with the pretrained model is introduced. This does not involve training but utilizes an already pre-trained model from TorchVision.
 
@@ -705,7 +678,7 @@ for i in range(top5\_prob.size(0)):
 
 print(categories[top5\_catid[i]], top5\_prob[i].item())
 
-##### 4.1.1.1.2 **Training inception v3**
+##### 4.1.1.1.2 Training inception v3
 
 The previous section focused on downloading and using the Inception-v3 model for a simple image classification task. This section will walk through training the model on a new dataset.
 
@@ -1055,7 +1028,7 @@ Plotting the train and test loss shows both metrics reducing over training epoch
 
 ![](RackMultipart20220711-1-vf5plv_html_857d2e3b4c81214.gif)
 
-#### 4.1.1.2Custom Model with CIFAR-10 on PyTorch
+#### 4.1.1.2 Custom Model with CIFAR-10 on PyTorch
 
 The CIFAR-10 (Canadian Institute for Advanced Research) dataset is a subset of the Tiny Images dataset (which contains 80 million images of size 32×32 collected from the Internet), and it consists of 60,000 32x32 color images. The images are labeled with one of 10 mutually exclusive classes: airplane, motor car, bird, cat, deer, dog, frog, cruise, ship, stallion, and truck (but not pickup truck). There are 6,000 images per class with 5,000 training and 1,000 testing images per class. Let us prepare a custom model for the classification of these images using PyTorch framework and go step-by-step as illustrated below.
 
@@ -1317,7 +1290,7 @@ accuracy = 100 \* float(correct\_count) / total\_pred[classname]
 
 print(&quot;Accuracy for class {:5s} is: {:.1f} %&quot;.format(classname,accuracy))
 
-#### 4.1.1.3Case Study: TensorFlow with Fashion MNIST
+#### 4.1.1.3 Case Study: TensorFlow with Fashion MNIST
 
 Fashion MNIST is a dataset that contains 70,000 grayscale images in 10 categories.
 
@@ -1554,7 +1527,7 @@ plot\_value\_array(1, predictions\_single[0], test\_labels)
 
 np.argmax(predictions\_single[0])
 
-#### 4.1.1.4Case Study: TensorFlow with Text Classification
+#### 4.1.1.4 Case Study: TensorFlow with Text Classification
 
 This procedure demonstrates text classification starting from plain text files stored on disk. You will train a binary classifier to perform sentiment analysis on an IMDB dataset. At the end of the notebook, there is an exercise for you to try in which you will train a multiclass classifier to predict the tag for a programming question on Stack Overflow.
 
@@ -1786,15 +1759,15 @@ examples = [
 
  export\_model.predict(examples)
 
-## Chapter 5Optimization
+# Chapter 5 Optimization
 
-## 5.1Inferencing
+## 5.1 Inferencing
 
 ![](RackMultipart20220711-1-vf5plv_html_25b16611cdc6d12f.png)
 
 Inference is where capabilities learned during Deep Learning training are put to work. It refers to the use of a fully trained neural network to make conclusions (predictions) on unseen data that the model has not interacted ever before. Deep Learning inferencing is achieved by feeding new data, such as new images, to the network, giving the Deep Neural Network a chance to classify the image. Taking our previous example of MNIST, the DNN can be fed new images of hand- written digit images allowing the neural network to classify digits. A fully trained DNN should make accurate predictions as to what an image represents, and inference cannot happen without training.
 
-### 5.1.1MIGraphX Introduction
+### 5.1.1 MIGraphX Introduction
 
 ![](RackMultipart20220711-1-vf5plv_html_66dcb9a6b8389bf5.png)
 
@@ -1806,11 +1779,11 @@ After importing model into MIGraphX, model is represented as `migraphx::program`
 
 ![](RackMultipart20220711-1-vf5plv_html_379075d02e2074b6.png)
 
-### 5.1.2MIGraphX Installation
+### 5.1.2 MIGraphX Installation
 
 There are three different options to get started with MiGraphx installation. MIGraphX has dependencies on ROCm libraries, so it is assumed that ROCm is installed on the machine.
 
-#### 5.1.2.1Option 1: Installing Binaries
+#### 5.1.2.1 Option 1: Installing Binaries
 
 To install MiGraphx on Debian-based systems like Ubuntu, use the following command:
 
@@ -1818,7 +1791,7 @@ sudo apt update &amp;&amp; sudo apt install -y migraphx
 
 The header files and libs are installed under /opt/rocm-\&lt;version\&gt;, where \&lt;version\&gt; is the ROCm version.
 
-#### 5.1.2.2Option 2: Building from Source
+#### 5.1.2.2 Option 2: Building from Source
 
 There are two ways to build the MIGraphX sources.
 
@@ -1829,7 +1802,7 @@ For detailed steps on building from source and installing dependencies, refer to
 
 _[https://github.com/ROCmSoftwarePlatform/AMDMIGraphX#building-from-source](https://github.com/ROCmSoftwarePlatform/AMDMIGraphX#building-from-source)_
 
-#### 5.1.2.3Option 3: Use Docker
+#### 5.1.2.3 Option 3: Use Docker
 
 To use Docker, follow these steps:
 
@@ -1861,11 +1834,11 @@ This will create `inceptioni1.onnx`, which can be imported in MIGraphX using C++
 
 Building from Source:
 
-### 5.1.3MIGraphX Example
+### 5.1.3 MIGraphX Example
 
 MIGraphX provides both C++ and Python APIs. The following sections show examples API.
 
-#### 5.1.3.1MIGraphX Python API
+#### 5.1.3.1 MIGraphX Python API
 
 Follow these steps:
 
@@ -1911,7 +1884,7 @@ print(np.argmax(result\_np))
 
 Find additional examples of Python API in _[`/examples](https://github.com/ROCmSoftwarePlatform/AMDMIGraphX/tree/develop/examples)_` directory of MIGraphX repo.
 
-#### 5.1.3.2MIGraphX C++ API
+#### 5.1.3.2 MIGraphX C++ API
 
 Follow these steps:
 
@@ -2037,7 +2010,7 @@ User may need to set `LD\_LIBRARY\_PATH` to `/opt/rocm/lib` if required during t
 
 Additional examples can be found in the MIGraphX repo under `_[examples](https://github.com/ROCmSoftwarePlatform/Ahttps:/github.com/ROCmSoftwarePlatform/AMDMIGraphX/tree/develop/examplesMDMIGraphX/tree/develop/examples)_/` directory.
 
-### 5.1.4Tuning MIGraphX
+### 5.1.4 Tuning MIGraphX
 
 Follow these steps:
 
@@ -2173,13 +2146,13 @@ Inference complete
 
 Inference time: 0.004ms
 
-#### 5.1.4.1Known Issue
+#### 5.1.4.1 Known Issue
 
 Currently, there is a known issue with the tuning process.
 
 Users are advised to use Docker for performance tunings. Docker images can be built and run using instructions provided previously. Inside the Docker image, set file descriptors limit to a high limit by running `ulimit -n 1048576`.
 
-## Chapter 6Troubleshooting
+# Chapter 6 Troubleshooting
 
 **Issue:** Getting &quot;hipErrorNoBinaryForGPU: Unable to find code object for all current devices!&quot; when trying to run PyTorch
 
@@ -2225,7 +2198,7 @@ roc-obj-ls -v $TORCHDIR/lib/libtorch\_hip.so # check for gfx target
 
  Currently, ROCm is not supported on Windows.
 
-## Chapter 7 References
+# Chapter 7 References
 
 | [1] | C. Szegedy, V. Vanhoucke, S. Ioffe, J. Shlens and Z. Wojna, &quot;Rethinking the Inception Architecture for Computer Vision,&quot; _CoRR,_ p. abs/1512.00567, 2015. |
 | --- | --- |
@@ -2242,7 +2215,3 @@ roc-obj-ls -v $TORCHDIR/lib/libtorch\_hip.so # check for gfx target
 
 [11] Torchvision. [Online] . Available https://pytorch.org/vision/master/index.html?highlight=torchvision#module-torchvision
 
-|
- |
- |
- |
