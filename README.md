@@ -125,11 +125,11 @@ The performance of AMD hardware and associated software also offers excellent be
 
 # Chapter 2 Prerequisites
 
-## 2.1 Hardware prerequisites
+## 2.1 Hardware Prerequisites
 
 Confirm that the installation hardware supports the ROCm™ stack.
 
-_[https://github.com/RadeonOpenCompute/ROCm#Hardware-and-Software-Support](https://github.com/RadeonOpenCompute/ROCm#Hardware-and-Software-Support)_
+[https://github.com/RadeonOpenCompute/ROCm#Hardware-and-Software-Support](https://github.com/RadeonOpenCompute/ROCm#Hardware-and-Software-Support)
 
 ## 2.2 ROCm Installation Guide
 
@@ -139,15 +139,9 @@ ROCm user-space API is guaranteed to be compatible with certain older and newer 
 
 **Note** The color in the tables may look slightly different.
 
-**Table**  **1**  **ROCm Userspace Compatibility with KFD****  **
+**Table 1: ROCm Userspace Compatibility with KFD**
 
-<table width="100%" align="center">
- <tr width="100%" align="center">
-    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/Matrix-1.png" width=""/>
- </tr>
-</table>
-
-Legends:
+**Legends:**
 
 **Light Green** : Supported version
 
@@ -155,7 +149,11 @@ Legends:
 
 **Light Grey** : Unsupported version
 
- ![](RackMultipart20220711-1-vf5plv_html_b717630de3538c9e.png)
+<table width="100%" align="center">
+ <tr width="100%" align="center">
+    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/Matrix-1.png" width=""/>
+ </tr>
+</table>
 
 Kernel space compatibility meets the following condition:
 
@@ -165,29 +163,33 @@ Kernel space compatibility meets the following condition:
 
 The ROCm release supports the most recent and two prior releases of PyTorch and TensorFlow.
 
-**Table**  **2**  **ROCm Framework Compatibility with PyTorch****  **
+**Table 2: ROCm Framework Compatibility with PyTorch**
 
-![Shape5](RackMultipart20220711-1-vf5plv_html_38917c15be10e3b9.gif)
-
-Legends:
+**Legends:**
 
 **Light Blue** : Versions with backward compatibility
 
 **Light Grey** : Unsupported version
 
- ![](RackMultipart20220711-1-vf5plv_html_f9c8297b8071931f.png)
+<table width="100%" align="center">
+ <tr width="100%" align="center">
+    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/Matrix-2.png" width=""/>
+ </tr>
+</table>
 
-**Table**  **3**  **ROCm Framework Compatibility with TensorFlow****  **
+**Table 3: ROCm Framework Compatibility with TensorFlow**
 
-![Shape6](RackMultipart20220711-1-vf5plv_html_2fa612a21123942d.gif)
-
-Legends:
+**Legends:**
 
 **Light Blue** : Versions with backward compatibility
 
 **Light Grey** : Unsupported version
 
- ![](RackMultipart20220711-1-vf5plv_html_e9ba59a33a594f74.png)
+<table width="100%" align="center">
+ <tr width="100%" align="center">
+    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/Matrix-3.png" width=""/>
+ </tr>
+</table>
 
 ### 2.2.3 Installation
 
@@ -197,13 +199,19 @@ Refer to the latest ROCm installation guide.
 
 You may verify the ROCm installation using the &#39;rocminfo&#39; command.
 
+```
 $ /opt/rocm-\&lt;version\&gt;/bin/rocminfo
+```
 
 # Chapter 3 Frameworks Installation Guide
 
 ## 3.1 PyTorch
 
-![](RackMultipart20220711-1-vf5plv_html_e6585b82fac22c1b.png)
+<table width="100%" align="center">
+ <tr width="100%" align="center">
+    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/PyTorch.png" width=""/>
+ </tr>
+</table>
 
 PyTorch is an open-source Machine Learning Python library, primarily differentiated by Tensor computing with GPU acceleration and a type-based automatic differentiation. Other advanced features include support for distributed training, native ONNX support, C++ frontend, ability to deploy at scale using TorchServe, and production-ready deployment mechanism through TorchScript.
 
