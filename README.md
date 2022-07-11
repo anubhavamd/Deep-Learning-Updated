@@ -85,7 +85,11 @@
 
 ## 1.1 Machine Learning
 
-![](RackMultipart20220711-1-vf5plv_html_e871cc31ce81b318.jpg)
+<table width="100%" align="center">
+ <tr width="100%" align="center">
+    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/Machine%20Learning.png">
+ </tr>
+</table>
 
 Machine Learning (ML) is a field within Artificial Intelligence (AI) that focuses on algorithms that can learn from experience or data, and automatically improve outcomes. These algorithms can adapt to new circumstances, unlike explicitly programmed programs. These classes of algorithms detect patterns in the underlying data and modify an underlying model to extrapolate to new situations.
 
@@ -93,7 +97,11 @@ Within ML, this guide primarily focuses on supervised learning algorithms. The t
 
 ## 1.2 Deep Learning
 
-![](RackMultipart20220711-1-vf5plv_html_3eb59412595c8d2e.jpg)
+<table width="100%" align="center">
+ <tr width="100%" align="center">
+    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/Deep%20Learning%20Image%201.png">
+ </tr>
+</table>
 
 Deep Learning (DL) algorithms are a class of Machine Learning algorithms inspired by biological neural networks and comprise multiple levels of simple component layers. The earliest component classifier is the perceptron, a binary classifier comprising a linear fully connected stage with a non-linear decision stage. Modern Deep Learning component layers include widely accepted layers such as convolution, activation, fully connected, long short-term memory, or custom layers designed by application developers.
 
@@ -133,7 +141,11 @@ ROCm user-space API is guaranteed to be compatible with certain older and newer 
 
 **Table**  **1**  **ROCm Userspace Compatibility with KFD****  **
 
-![Shape4](RackMultipart20220711-1-vf5plv_html_4db885c847873293.gif)
+<table width="100%" align="center">
+ <tr width="100%" align="center">
+    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/Matrix-1.png" width=""/>
+ </tr>
+</table>
 
 Legends:
 
