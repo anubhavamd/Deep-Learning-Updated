@@ -543,74 +543,96 @@ To install TensorFlow using the wheels package, follow these commands:
    python3 –version
 ```
 
-If the Python version is less than, <3.7, upgrade Python. Otherwise, skip this step and go to step 3.
+   If the Python version is less than, <3.7, upgrade Python. Otherwise, skip this step and go to step 3.
 
-**Note** The supported Python versions are 3.7, 3.8, 3.9, and 3.10.
+   **Note** The supported Python versions are 3.7, 3.8, 3.9, and 3.10.
 
 ```
-sudo apt-get install python3.7 # or python3.8 or python 3.9 or python 3.10
+   sudo apt-get install python3.7 # or python3.8 or python 3.9 or python 3.10
 ```
 
 2. Set up multiple python versions using update-alternatives.
 
+```
+   update-alternatives --query python3
+   sudo update-alternatives --install
+   /usr/bin/python3 python3 /usr/bin/python[version] [priority]
+```
 
-update-alternatives --query python3
- sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python[version] [priority]
+   **Note** Follow the instruction in step 2 for incompatible Python versions.
 
-**Note** Follow the instruction in step 2 for incompatible Python versions.
+```
+   sudo update-alternatives --config python3
+```
 
-sudo update-alternatives --config python3
+3. Follow the screen prompts and select the Python version installed in step 2.
 
-1. Follow the screen prompts and select the Python version installed in step 2.
+4. Install or upgrade PIP.
 
-1. Install or upgrade PIP.
+```
+   sudo apt install python3-pip
+```
 
-sudo apt install python3-pip
+   To install PIP:
 
-To install PIP:
+```
+   /usr/bin/python[version]  -m pip install --upgrade pip
+```
 
-/usr/bin/python[version]  -m pip install --upgrade pip
+    Upgrade PIP for Python version installed in step 2:
 
-Upgrade PIP for Python version installed in step 2:
+```
+    sudo pip3 install --upgrade pip
+```
 
-sudo pip3 install --upgrade pip
+5. Install Tensorflow.
 
-1.  Install Tensorflow.
+```
+    /usr/bin/python[version] -m pip install --user tensorflow-rocm==[wheel-version] --upgrade
+```
 
-/usr/bin/python[version] -m pip install --user tensorflow-rocm==[wheel-version] --upgrade
+6. Install Tensorflow for the Python version as indicated in step 2. For a valid wheel version for a ROCm release, refer to the instructions below:
 
-1. Install Tensorflow for the Python version as indicated in step 2. For a valid wheel version for a ROCm release, refer to the instructions below:
+```
+   sudo apt install rocm-libs rccl
+```
 
+7. Update protobuf to 3.19 or lower.
 
-sudo apt install rocm-libs rccl
+```
+   /usr/bin/python3.7  -m pip install protobuf=3.19.0
+   sudo pip3 install tensorflow
+```
 
-1. Update protobuf to 3.19 or lower.
+8. Set the environment variable PYTHONPATH.
 
-/usr/bin/python3.7  -m pip install protobuf=3.19.0
+```
+    export PYTHONPATH="./.local/lib/python[version]/site-packages:$PYTHONPATH"  #Use same python version as in step 2
+```
 
-sudo pip3 install tensorflow
+9. Install libraries.
 
-1. Set the environment variable PYTHONPATH.
+```
+    sudo apt install rocm-libs rccl
+```
 
-export PYTHONPATH=&quot;./.local/lib/python[version]/site-packages:$PYTHONPATH&quot; #Use same python version as in step 2
+10. Test installation.
 
-1. Install libraries.
-
-sudo apt install rocm-libs rccl
-
-1. Test installation.
-
-python3 -c &#39;import tensorflow&#39; 2\&gt; /dev/null &amp;&amp; echo &#39;Success&#39; || echo &#39;Failure&#39;
+```
+    python3 -c 'import tensorflow' 2> /dev/null && echo 'Success' || echo 'Failure'
+```
 
 **Note** For details on tensorflow-rocm wheels and ROCm version compatibility, see:
 
-_[https://github.com/ROCmSoftwarePlatform/tensorflow-upstream/blob/develop-upstream/rocm\_docs/tensorflow-rocm-release.md](https://github.com/ROCmSoftwarePlatform/tensorflow-upstream/blob/develop-upstream/rocm_docs/tensorflow-rocm-release.md)_
+[https://github.com/ROCmSoftwarePlatform/tensorflow-upstream/blob/develop-upstream/rocm\_docs/tensorflow-rocm-release.md](https://github.com/ROCmSoftwarePlatform/tensorflow-upstream/blob/develop-upstream/rocm_docs/tensorflow-rocm-release.md)
 
 ### 3.2.2 Test the TensorFlow Installation
 
-To test the installation of TensorFlow, run the container image as specified in the previous section - _[Installing TensorFlow](#_Installing_TensorFlow)_. Ensure you access the Python shell in the Docker container.
+To test the installation of TensorFlow, run the container image as specified in the previous section - [Installing TensorFlow](#_Installing_TensorFlow). Ensure you access the Python shell in the Docker container.
 
-#python3 -c &#39;import tensorflow&#39; 2\&gt; /dev/null &amp;&amp; echo &#39;Success&#39; || echo &#39;Failure&#39;
+```
+   python3 -c 'import tensorflow' 2> /dev/null && echo ‘Success’ || echo ‘Failure’
+```
 
 ### 3.2.3 Run a Basic TensorFlow Example
 
@@ -620,13 +642,16 @@ Follow these steps:
 
 1. Clone the TensorFlow example repository.
 
-#git clone https://github.com/anubhavamd/tensorflow\_mnist.git
+```
+   #git clone https://github.com/anubhavamd/tensorflow\_mnist.git
+```
 
-1. Install the dependencies of the code and run the code.
+2. Install the dependencies of the code and run the code.
 
-#pip3 install requirement.txt
-
-#python mnist\_tf.py
+```
+   #pip3 install requirement.txt
+   #python mnist\_tf.py
+```
 
 # Chapter 4 Deep Learning Training
 
@@ -647,11 +672,9 @@ Training is different from Inference, particularly from the hardware perspective
 | --- | --- |
 | Training is measured in hours/days. | Inference is measured in minutes. |
 | Training is generally run offline in a data-center or cloud setting. | Inference is done on edge devices. |
-| The memory requirements for training are higher than inference due to the necessity of storing intermediate data, such as activations and error gradients.
- |
- |
+| The memory requirements for training are higher than inference due to the necessity of storing intermediate data, such as activations and error gradients.| |
 | Data for training is available on the disk before the training process and is generally large. The training performance is measured in how fast the data batches can be processed. | Inference data usually arrives stochastically, which may be batched to improve performance. Performance of inference is usually measured in throughput speed to process the batch of data and the delay in responding to the input (latency). |
-| Different quantization data types are normally chosen between training (FP32, BF16) and inference (FP16, INT8). The computation hardware has different specializations on different datatypes, leading to improvement in performance if a faster datatype can be selected for the corresponding task. |
+| Different quantization data types are normally chosen between training (FP32, BF16) and inference (FP16, INT8). The computation hardware has different specializations on different datatypes, leading to improvement in performance if a faster datatype can be selected for the corresponding task.|
 
 ### 4.1.1 Case Studies
 
@@ -669,23 +692,31 @@ This example is adapted from the PyTorch research hub page on Inception-v3 [3].1
 
 Follow these steps:
 
-1. Run the Pytorch ROCm-based Docker image, or refer to section 3.1.1_[Installing PyTorch](#_Installing_PyTorch)_ for setting up a PyTorch environment on ROCm.
+1. Run the Pytorch ROCm-based Docker image, or refer to section 3.1.1 [Installing PyTorch](#_Installing_PyTorch) for setting up a PyTorch environment on ROCm.
 
-docker run -it -v $HOME:/data --cap-add=SYS\_PTRACE --security-opt seccomp=unconfined --device=/dev/kfd --device=/dev/dri --group-add video --ipc=host --shm-size 8G rocm/pytorch:latest
+```
+   docker run -it -v $HOME:/data --cap-add=SYS\_PTRACE --security-opt 
+   seccomp=unconfined --device=/dev/kfd --device=/dev/dri --group-add video 
+   --ipc=host --shm-size 8G rocm/pytorch:latest
+```
 
-1. Install the &quot;torchvision&quot; dependency in the Python installed on the container.
+2. Install the “torchvision” dependency in the Python installed on the container.
 
-pip install --user git+https://github.com/pytorch/vision.git@8a2dc6f22ac4389ccba8859aa1e1cb14f1ee53db
+```
+   pip install --user git+https://github.com/pytorch/vision.git@8a2dc6f22ac4389ccba8859aa1e1cb14f1ee53db
+```
 
-1. Run the Python shell start importing packages and libraries for model creation.
+3. Run the Python shell start importing packages and libraries for model creation.
 
-import torch
+```
+   import torch
+   import torchvision
+```
 
-import torchvision
+4. Set the model in evaluation mode. Evaluation mode directs PyTorch to not store intermediate data, which would have been used in training.
 
-1. Set the model in evaluation mode. Evaluation mode directs PyTorch to not store intermediate data, which would have been used in training.
-
-model **=** torch.hub.load(&#39;pytorch/vision:v0.10.0&#39;, &#39;inception\_v3&#39;, pretrained **=** True)
+```
+model = torch.hub.load(&#39;pytorch/vision:v0.10.0&#39;, &#39;inception\_v3&#39;, pretrained **=** True)
 
 model.eval()
 
