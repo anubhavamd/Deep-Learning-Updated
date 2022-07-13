@@ -1860,23 +1860,31 @@ Follow these steps:
  </tr>
 </table>
 
-1. Export the model.
+<table width="100%" align="center">
+ <tr width="100%" align="center">
+    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/Text%20Classification%207.png">
+ </tr>
+</table>
 
-export\_model = tf.keras.Sequential([
- vectorize\_layer,
- model,
-   layers.Activation(&#39;sigmoid&#39;)
- ])
+25. Export the model.
 
- export\_model.compile(
-     loss=losses.BinaryCrossentropy(from\_logits=False), optimizer=&quot;adam&quot;, metrics=[&#39;accuracy&#39;]
- )
+```
+    export_model = tf.keras.Sequential([
+    vectorize_layer,
+    model,
+      layers.Activation('sigmoid')
+    ])
 
- # Test it with `raw_test_ds`, which yields raw strings
- loss, accuracy = export\_model.evaluate(raw\_test\_ds)
- print(accuracy)
+    export_model.compile(
+        loss=losses.BinaryCrossentropy(from_logits=False), optimizer="adam", metrics=['accuracy']
+    )
 
-1. To get predictions for new examples, simply call model.predict().
+    # Test it with `raw_test_ds`, which yields raw strings
+    loss, accuracy = export_model.evaluate(raw_test_ds)
+    print(accuracy)
+```
+
+26. To get predictions for new examples, simply call model.predict().
 
 examples = [
    &quot;The movie was great!&quot;,
