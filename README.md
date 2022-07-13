@@ -1886,33 +1886,31 @@ Follow these steps:
 
 26. To get predictions for new examples, simply call model.predict().
 
-examples = [
-   &quot;The movie was great!&quot;,
-   &quot;The movie was okay.&quot;,
-   &quot;The movie was terrible...&quot;
- ]
+```
+    examples = [
+      "The movie was great!",
+      "The movie was okay.",
+      "The movie was terrible..."
+    ]
+```
 
- export\_model.predict(examples)
+```
+     export_model.predict(examples)
+```
 
 # Chapter 5 Optimization
 
 ## 5.1 Inferencing
 
-![](RackMultipart20220711-1-vf5plv_html_25b16611cdc6d12f.png)
-
 Inference is where capabilities learned during Deep Learning training are put to work. It refers to the use of a fully trained neural network to make conclusions (predictions) on unseen data that the model has not interacted ever before. Deep Learning inferencing is achieved by feeding new data, such as new images, to the network, giving the Deep Neural Network a chance to classify the image. Taking our previous example of MNIST, the DNN can be fed new images of hand- written digit images allowing the neural network to classify digits. A fully trained DNN should make accurate predictions as to what an image represents, and inference cannot happen without training.
 
 ### 5.1.1 MIGraphX Introduction
-
-![](RackMultipart20220711-1-vf5plv_html_66dcb9a6b8389bf5.png)
 
 MIGraphX is a graph compiler focused on accelerating the Machine Learning inference that can target AMD GPUs and CPUs. MIGraphX accelerates the Machine Learning models by leveraging several graph level transformations and optimizations. These optimizations include operator fusion, arithmetic simplifications, dead-code elimination, common subexpression elimination (CSE), constant propagation, etc. After doing all these transformations, MIGraphX emits code for the AMD GPU by calling to MIOpen, rocBLAS, or creating HIP kernels for a particular operator. MIGraphX can also target CPU using DNNL or ZenDNN libraries.
 
 MIGraphX provides easy to use APIs both in C++ as well as Python to import machine models in ONNX or TensorFlow. Users can compile, save, load, and run these models using the MIGraphX&#39;s C++ and Python APIs. Internally, MIGraphX parses ONNX or TensorFlow models into internal graph representation where each operator in the model gets mapped to an operator within MIGraphX. Each of these operators defines various attributes, number of arguments, type of arguments, shape of arguments, etc. After optimization passes all these operators get mapped to various kernels either on GPUs or CPUs.
 
 After importing model into MIGraphX, model is represented as `migraphx::program` . `migraphx::program` is made up of `migraphx::module`. Program can be made up of several modules, but it always has one `main\_module`. Modules are made up of `migraphx::instruction\_ref`. Instructions contains the `migraphx::op` and arguments to the operator.
-
-![](RackMultipart20220711-1-vf5plv_html_379075d02e2074b6.png)
 
 ### 5.1.2 MIGraphX Installation
 
@@ -1922,20 +1920,21 @@ There are three different options to get started with MiGraphx installation. MIG
 
 To install MiGraphx on Debian-based systems like Ubuntu, use the following command:
 
-sudo apt update &amp;&amp; sudo apt install -y migraphx
-
-The header files and libs are installed under /opt/rocm-\&lt;version\&gt;, where \&lt;version\&gt; is the ROCm version.
+```
+sudo apt update && sudo apt install -y migraphx
+```
+The header files and libs are installed under /opt/rocm- ``` <version> ```, where ``` <version> ``` is the ROCm version.
 
 #### 5.1.2.2 Option 2: Building from Source
 
 There are two ways to build the MIGraphX sources.
 
-- [Use the ROCm build tool](https://github.com/ROCmSoftwarePlatform/AMDMIGraphX#use-the-rocm-build-tool-rbuild) - This approach uses [rbuild](https://github.com/RadeonOpenCompute/rbuild) to install the prerequisites and build the libs with just one command.
-- [Use CMake](https://github.com/ROCmSoftwarePlatform/AMDMIGraphX#use-cmake-to-build-migraphx) - This approach uses a script to install the prerequisites, then uses _cmake_ to build the source.
+- Use the ROCm build tool - This approach uses rbuild to install the prerequisites and build the libs with just one command.
+- Use CMake - This approach uses a script to install the prerequisites, then uses cmake to build the source.
 
 For detailed steps on building from source and installing dependencies, refer to the following Readme file:
 
-_[https://github.com/ROCmSoftwarePlatform/AMDMIGraphX#building-from-source](https://github.com/ROCmSoftwarePlatform/AMDMIGraphX#building-from-source)_
+[https://github.com/ROCmSoftwarePlatform/AMDMIGraphX#building-from-source](https://github.com/ROCmSoftwarePlatform/AMDMIGraphX#building-from-source)
 
 #### 5.1.2.3 Option 3: Use Docker
 
@@ -1943,28 +1942,33 @@ To use Docker, follow these steps:
 
 1. The easiest way to set up the development environment is to use Docker. To build Docker from scratch, first clone the MIGraphX repo by running:
 
-git clone --recursive _[https://github.com/ROCmSoftwarePlatform/AMDMIGraphX](https://github.com/ROCmSoftwarePlatform/AMDMIGraphX)_
+```
+   git clone --recursive 
+   [https://github.com/ROCmSoftwarePlatform/AMDMIGraphX](https://github.com/ROCmSoftwarePlatform/AMDMIGraphX)
+```
 
-1. The repo contains a Dockerfile from which you can build a Docker image as:
+2. The repo contains a Dockerfile from which you can build a Docker image as:
 
-docker build -t migraphx .
+```
+   docker build -t migraphx .
+```
 
-1. Then to enter the development environment use Docker run:
+3. Then to enter the development environment use Docker run:
 
-docker run --device=&#39;/dev/kfd&#39; --device=&#39;/dev/dri&#39; -v=`pwd`:/code/AMDMIGraphX -w /code/AMDMIGraphX --group-add video -it migraphx
+```
+   docker run --device=&#39;/dev/kfd&#39; --device=&#39;/dev/dri&#39; -v=`pwd`:/code/AMDMIGraphX -w /code/AMDMIGraphX --group-add video -it migraphx
+```
 
 The Docker image contains all the required prerequisites required for the installation, so users can just go to the folder /code/AMDMIGraphX and follow the steps as mentioned in:
 
 of both using InceptionV3 model. To walk through the examples, fetch InceptionV3 onnx model by running the following:
 
-import torch
-
-import torchvision.models as models
-
-inception = models.inception\_v3(pretrained=True)
-
-torch.onnx.export(inception,torch.randn(1,3,299,299), &quot;inceptioni1.onnx&quot;)
-
+```
+  import torch
+  import torchvision.models as models
+  inception = models.inception_v3(pretrained=True)
+  torch.onnx.export(inception,torch.randn(1,3,299,299), "inceptioni1.onnx")
+```
 This will create `inceptioni1.onnx`, which can be imported in MIGraphX using C++ or Python
 
 Building from Source:
@@ -1979,45 +1983,32 @@ Follow these steps:
 
 1. To import the migraphx module in python script, users need to set PYTHONPATH to migraphx libs installation. If binaries are installed using steps mentioned in Option 1: Installing Binaries, perform the following actions:
 
-export PYTHONPATH=$PYTHONPATH:/opt/rocm/lib/
+```
+   export PYTHONPATH=$PYTHONPATH:/opt/rocm/lib/
+```
 
-1. The following script shows usage of Python API to import onnx model, compiling it and running inference on it. Users may need to set `LD\_LIBRARY\_PATH` to `opt/rocm/lib` if required.
+2. The following script shows usage of Python API to import onnx model, compiling it and running inference on it. Users may need to set `LD\_LIBRARY\_PATH` to `opt/rocm/lib` if required.
 
-# import migraphx and numpy
-
-import migraphx
-
-import numpy as np
-
-# import and parse inception model
-
-model = migraphx.parse\_onnx(&quot;inceptioni1.onnx&quot;)
-
-# compile model for the GPU target
-
-model.compile(migraphx.get\_target(&quot;gpu&quot;))
-
-# optionally print compiled model
-
-model.print()
-
-# create random input image
-
-input\_image = np.random.rand(1, 3, 299, 299).astype(&#39;float32&#39;)
-
-# feed image to model, &#39;x.1` is the input param name
-
-results = model.run({&#39;x.1&#39;: input\_image})
-
-# get the results back
-
-result\_np = np.array(results[0])
-
-# print the inferred class of the input image
-
-print(np.argmax(result\_np))
-
-Find additional examples of Python API in _[`/examples](https://github.com/ROCmSoftwarePlatform/AMDMIGraphX/tree/develop/examples)_` directory of MIGraphX repo.
+```
+   # import migraphx and numpy 
+   import migraphx
+   import numpy as np
+   # import and parse inception model 
+   model = migraphx.parse_onnx("inceptioni1.onnx")
+   # compile model for the GPU target
+   model.compile(migraphx.get_target("gpu"))
+   # optionally print compiled model
+   model.print()     
+   # create random input image 
+   input_image = np.random.rand(1, 3, 299, 299).astype('float32')
+   # feed image to model, ‘x.1` is the input param name 
+   results = model.run({'x.1': input_image})
+   # get the results back
+   result_np = np.array(results[0])
+   # print the inferred class of the input image 
+   print(np.argmax(result_np))
+```
+Find additional examples of Python API in `/examples` directory of MIGraphX repo. 
 
 #### 5.1.3.2 MIGraphX C++ API
 
@@ -2025,125 +2016,81 @@ Follow these steps:
 
 1. The following is a minimalist example that shows the usage of MIGraphX C++ API to load onnx file, compile it for the GPU, and run inference on it. To use MIGraphX C++ API, users only need to migraphx.hpp file. This example runs inference on InceptionV3 model.
 
-#include \&lt;vector\&gt;
+```
+   #include <vector>
+   #include <string>
+   #include <algorithm>
+   #include <ctime>
+   #include <random>
+   #include <migraphx/migraphx.hpp>
 
-#include \&lt;string\&gt;
-
-#include \&lt;algorithm\&gt;
-
-#include \&lt;ctime\&gt;
-
-#include \&lt;random\&gt;
-
-#include\&lt;migraphx/migraphx.hpp\&gt;
-
-int main(int argc, char\*\* argv)
-
-{
-
-    migraphx::program prog;
-
-    migraphx::onnx\_options onnx\_opts;
-
-    // import and parse onnx file into migraphx::program
-
-    prog = parse\_onnx(&quot;inceptioni1.onnx&quot;, onnx\_opts);
-
-    // print imported model
-
-    prog.print();
-
-    migraphx::target targ = migraphx::target(&quot;gpu&quot;);
-
-    migraphx::compile\_options comp\_opts;
-
-    comp\_opts.set\_offload\_copy();
-
-    // compile for the GPU
-
-    prog.compile(targ, comp\_opts);
-
-    // print the compiled program
-
-    prog.print();
-
-    // randomly generate input image
-
-// of shape (1, 3, 299, 299)
-
-    std::srand(unsigned(std::time(nullptr)));
-
-    std::vector\&lt;float\&gt; input\_image(1\*299\*299\*3);
-
-    std::generate(input\_image.begin(), input\_image.end(), std::rand);
-
-    // users need to provide data for the input
-
-// parameters in order to run inference
-
-    // you can query into migraph program for the parameters
-
-    migraphx::program\_parameters prog\_params;
-
-    auto param\_shapes = prog.get\_parameter\_shapes();
-
-    auto input        = param\_shapes.names().front();
-
-// create argument for the parameter
-
-    prog\_params.add(input, migraphx::argument(param\_shapes[input], input\_image.data()));
-
-    // run inference
-
-    auto outputs = prog.eval(prog\_params);
-
-    // read back the output
-
-    float\* results = reinterpret\_cast\&lt;float\*\&gt;(outputs[0].data());
-
-    float\* max     = std::max\_element(results, results + 1000);
-
-    int answer = max - results;
-
-    std::cout \&lt;\&lt; &quot;answer: &quot; \&lt;\&lt; answer \&lt;\&lt; std::endl;
-
+   int main(int argc, char** argv)
+   {
+       migraphx::program prog;
+       migraphx::onnx_options onnx_opts;
+       // import and parse onnx file into migraphx::program
+       prog = parse_onnx("inceptioni1.onnx", onnx_opts);
+       // print imported model
+       prog.print();
+       migraphx::target targ = migraphx::target("gpu");
+       migraphx::compile_options comp_opts;
+       comp_opts.set_offload_copy();
+       // compile for the GPU
+       prog.compile(targ, comp_opts);
+       // print the compiled program
+       prog.print();
+       // randomly generate input image 
+       // of shape (1, 3, 299, 299)
+       std::srand(unsigned(std::time(nullptr)));
+       std::vector<float> input_image(1*299*299*3);
+       std::generate(input_image.begin(), input_image.end(), std::rand);
+       // users need to provide data for the input 
+       // parameters in order to run inference
+       // you can query into migraph program for the parameters
+       migraphx::program_parameters prog_params;
+       auto param_shapes = prog.get_parameter_shapes();
+       auto input        = param_shapes.names().front();
+       // create argument for the parameter
+       prog_params.add(input, migraphx::argument(param_shapes[input], input_image.data()));
+       // run inference
+       auto outputs = prog.eval(prog_params);
+       // read back the output 
+       float* results = reinterpret_cast<float*>(outputs[0].data());
+       float* max     = std::max_element(results, results + 1000);
+       int answer = max - results;
+       std::cout << "answer: " << answer << std::endl;
 }
+```
+2. To compile this program, users can make use of CMake and they only need to link `migraphx::c` library in order to make use of MIGraphX&#39;s C++ API. Following is the CMakeLists.txt file that can build the earlier example:
 
-1. To compile this program, users can make use of CMake and they only need to link `migraphx::c` library in order to make use of MIGraphX&#39;s C++ API. Following is the CMakeLists.txt file that can build the earlier example:
+```
+   cmake_minimum_required(VERSION 3.5)
+   project (CAI)
 
-cmake\_minimum\_required(VERSION 3.5)
+   set (CMAKE_CXX_STANDARD 14)
+   set (EXAMPLE inception_inference)
 
-project (CAI)
+   list (APPEND CMAKE_PREFIX_PATH /opt/rocm/hip /opt/rocm)
+   find_package (migraphx)
 
-set (CMAKE\_CXX\_STANDARD 14)
+   message("source file: " ${EXAMPLE}.cpp " ---> bin: " ${EXAMPLE})
+   add_executable(${EXAMPLE} ${EXAMPLE}.cpp)
 
-set (EXAMPLE inception\_inference)
+   target_link_libraries(${EXAMPLE} migraphx::c)
+```
 
-list (APPEND CMAKE\_PREFIX\_PATH /opt/rocm/hip /opt/rocm)
+3. To build the executable file, run following from directory containing inception\_inference.cpp file:
 
-find\_package (migraphx)
-
-message(&quot;source file: &quot; ${EXAMPLE}.cpp &quot; ---\&gt; bin: &quot; ${EXAMPLE})
-
-add\_executable(${EXAMPLE} ${EXAMPLE}.cpp)
-
-target\_link\_libraries(${EXAMPLE} migraphx::c)
-
-1. To build the executable file, run following from directory containing inception\_inference.cpp file:
-
-mkdir build
-
-cd build
-
-cmake ..
-
-make -j$(nproc)
-
-./inception\_inference
-
+```
+   mkdir build
+   cd build
+   cmake ..
+   make -j$(nproc)
+   ./inception_inference
+```
 User may need to set `LD\_LIBRARY\_PATH` to `/opt/rocm/lib` if required during the build.
 
-Additional examples can be found in the MIGraphX repo under `_[examples](https://github.com/ROCmSoftwarePlatform/Ahttps:/github.com/ROCmSoftwarePlatform/AMDMIGraphX/tree/develop/examplesMDMIGraphX/tree/develop/examples)_/` directory.
+Additional examples can be found in the MIGraphX repo under `examples/` directory. 
 
 ### 5.1.4 Tuning MIGraphX
 
@@ -2155,131 +2102,75 @@ Follow these steps:
 
 **Note** Results vary depending on the system configurations.
 
-1. For reference, the following code snippet shows inference runs for only the first 10 iterations for both tuned and untuned kernels:
+2. For reference, the following code snippet shows inference runs for only the first 10 iterations for both tuned and untuned kernels:
 
-### UNTUNED ###
+```
+   ### UNTUNED ###
+   iterator : 0
+   Inference complete
+   Inference time: 0.063ms
+   iterator : 1
+   Inference complete
+   Inference time: 0.008ms
+   iterator : 2
+   Inference complete
+   Inference time: 0.007ms
+   iterator : 3
+   Inference complete
+   Inference time: 0.007ms
+   iterator : 4
+   Inference complete
+   Inference time: 0.007ms
+   iterator : 5
+   Inference complete
+   Inference time: 0.008ms
+   iterator : 6
+   Inference complete
+   Inference time: 0.007ms
+   iterator : 7
+   Inference complete
+   Inference time: 0.028ms
+   iterator : 8
+   Inference complete
+   Inference time: 0.029ms
+   iterator : 9
+   Inference complete
+   Inference time: 0.029ms
+```
 
-iterator : 0
-
-Inference complete
-
-Inference time: 0.063ms
-
-iterator : 1
-
-Inference complete
-
-Inference time: 0.008ms
-
-iterator : 2
-
-Inference complete
-
-Inference time: 0.007ms
-
-iterator : 3
-
-Inference complete
-
-Inference time: 0.007ms
-
-iterator : 4
-
-Inference complete
-
-Inference time: 0.007ms
-
-iterator : 5
-
-Inference complete
-
-Inference time: 0.008ms
-
-iterator : 6
-
-Inference complete
-
-Inference time: 0.007ms
-
-iterator : 7
-
-Inference complete
-
-Inference time: 0.028ms
-
-iterator : 8
-
-Inference complete
-
-Inference time: 0.029ms
-
-iterator : 9
-
-Inference complete
-
-Inference time: 0.029ms
-
-### TUNED ###
-
-iterator : 0
-
-Inference complete
-
-Inference time: 0.063ms
-
-iterator : 1
-
-Inference complete
-
-Inference time: 0.004ms
-
-iterator : 2
-
-Inference complete
-
-Inference time: 0.004ms
-
-iterator : 3
-
-Inference complete
-
-Inference time: 0.004ms
-
-iterator : 4
-
-Inference complete
-
-Inference time: 0.004ms
-
-iterator : 5
-
-Inference complete
-
-Inference time: 0.004ms
-
-iterator : 6
-
-Inference complete
-
-Inference time: 0.004ms
-
-iterator : 7
-
-Inference complete
-
-Inference time: 0.004ms
-
-iterator : 8
-
-Inference complete
-
-Inference time: 0.004ms
-
-iterator : 9
-
-Inference complete
-
-Inference time: 0.004ms
+```
+    ### TUNED ###
+    iterator : 0
+    Inference complete
+    Inference time: 0.063ms
+    iterator : 1
+    Inference complete
+    Inference time: 0.004ms
+    iterator : 2
+    Inference complete
+    Inference time: 0.004ms
+    iterator : 3
+    Inference complete
+    Inference time: 0.004ms
+    iterator : 4
+    Inference complete
+    Inference time: 0.004ms
+    iterator : 5
+    Inference complete
+    Inference time: 0.004ms
+    iterator : 6
+    Inference complete
+    Inference time: 0.004ms
+    iterator : 7
+    Inference complete
+    Inference time: 0.004ms
+    iterator : 8
+    Inference complete
+    Inference time: 0.004ms
+    iterator : 9
+    Inference complete
+    Inference time: 0.004ms
+```
 
 #### 5.1.4.1 Known Issue
 
@@ -2289,7 +2180,7 @@ Users are advised to use Docker for performance tunings. Docker images can be bu
 
 # Chapter 6 Troubleshooting
 
-**Issue:** Getting &quot;hipErrorNoBinaryForGPU: Unable to find code object for all current devices!&quot; when trying to run PyTorch
+**Issue:** Getting “hipErrorNoBinaryForGPU: Unable to find code object for all current devices!” when trying to run PyTorch
 
 The error denotes that PyTorch was not compiled to support the current GPU.
 
@@ -2297,45 +2188,48 @@ The error denotes that PyTorch was not compiled to support the current GPU.
 
 To implement a work around, follow these steps:
 
-1. Confirm that the hardware supports the ROCm stack. Refer to the Hardware and Software Support document at _[https://docs.amd.com](https://docs.amd.com/)_.
+1. Confirm that the hardware supports the ROCm stack. Refer to the Hardware and Software Support document at [https://docs.amd.com](https://docs.amd.com/).
 
+2. Determine gfx target.
 
-1. Determine gfx target.
-
+```
 rocminfo | grep gfx
+```
 
-1. Check if PyTorch is compiled with the correct gfx target.
+3. Check if PyTorch is compiled with the correct gfx target.
 
-TORCHDIR=$( dirname $( python3 -c &#39;import torch; print(torch.\_\_file\_\_)&#39; ) )
-
-roc-obj-ls -v $TORCHDIR/lib/libtorch\_hip.so # check for gfx target
+```
+TORCHDIR=$( dirname $( python3 -c 'import torch; print(torch.__file__)' ) )
+roc-obj-ls -v $TORCHDIR/lib/libtorch_hip.so # check for gfx target
+```
 
 **Note** If the hardware is supported, and PyTorch is not compiled for correct gfx target, recompile PyTorch with the correct gfx target if compiling from source. For wheels, or docker installation, contact ROCm support [6].
 
 **Issue:** Unable to access Docker or GPU in user accounts
 
- Ensure that the user is added to `docker`, `video`, and `render` Linux groups as described in the ROCm Installation Guide at _[https://docs.amd.com](https://docs.amd.com/)._
+ Ensure that the user is added to `docker`, `video`, and `render` Linux groups as described in the ROCm Installation Guide at [https://docs.amd.com](https://docs.amd.com/).
 
 **Work around:**
 
 1. Which consumer GPUs does ROCm support?
 
- ROCm supports gfx1030, which is the Navi21 series.
+   ROCm supports gfx1030, which is the Navi21 series.
 
-1. Can I Install PyTorch directly on bare metal?
+2. Can I Install PyTorch directly on bare metal?
 
- Bare-metal installation of PyTorch is supported through wheels. Refer to the Option 2: Install PyTorch Using Wheels package section in this guide for more information.
-2. How do I profile PyTorch workloads?
+   Bare-metal installation of PyTorch is supported through wheels. Refer to the Option 2: Install PyTorch Using Wheels package section in this guide for more          information.
+ 
+3. How do I profile PyTorch workloads?
 
- Use the PyTorch Profiler [6] to profile GPU kernels on ROCm.
+   Use the PyTorch Profiler [6] to profile GPU kernels on ROCm.
 
-1. Can I run ROCm on Windows?
+4. Can I run ROCm on Windows?
 
- Currently, ROCm is not supported on Windows.
+   Currently, ROCm is not supported on Windows.
 
 # Chapter 7 References
 
-| [1] | C. Szegedy, V. Vanhoucke, S. Ioffe, J. Shlens and Z. Wojna, &quot;Rethinking the Inception Architecture for Computer Vision,&quot; _CoRR,_ p. abs/1512.00567, 2015. |
+| [1] | C. Szegedy, V. Vanhoucke, S. Ioffe, J. Shlens and Z. Wojna, "Rethinking the Inception Architecture for Computer Vision," CoRR, p. abs/1512.00567, 2015. |
 | --- | --- |
 | [2] | PyTorch. [Online]. Available: https://pytorch.org/vision/stable/index.html. |
 | [3] | PyTorch. [Online]. Available: https://pytorch.org/hub/pytorch\_vision\_inception\_v3/. |
@@ -2345,8 +2239,6 @@ roc-obj-ls -v $TORCHDIR/lib/libtorch\_hip.so # check for gfx target
 | [7] | PyTorch, &quot;https://pytorch.org/tutorials/recipes/recipes/profiler\_recipe.html,&quot; [Online]. |
 | [8] | Advanced Micro Devices, Inc., [Online]. Available: https://rocmsoftwareplatform.github.io/AMDMIGraphX/doc/html/. |
 | [9] | Advanced Micro Devices, Inc., [Online]. Available: https://github.com/ROCmSoftwarePlatform/AMDMIGraphX/wiki. |
-
-[10] Docker. [Online]: [https://docs.docker.com/get-started/overview/](https://docs.docker.com/get-started/overview/)
-
-[11] Torchvision. [Online] . Available https://pytorch.org/vision/master/index.html?highlight=torchvision#module-torchvision
+| [10] | Docker. [Online]: [https://docs.docker.com/get-started/overview/](https://docs.docker.com/get-started/overview/) |
+| [11] | Torchvision. [Online] . Available https://pytorch.org/vision/master/index.html?highlight=torchvision#module-torchvision |
 
