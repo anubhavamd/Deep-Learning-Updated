@@ -1082,35 +1082,36 @@ The following is the core training logic:
 
 28. Now that training is done for the epoch, the model is evaluated against the validation dataset.
 
-model.eval()
+```
+     model.eval()
+         with torch.inference_mode():
+             running_loss = 0
+             for step, (image, target) in enumerate(data_loader_test):
+                 image, target = image.to(device), target.to(device)
 
-with torch.inference\_mode():
+                 output = model(image)
+                 loss = criterion(output, target)
 
-running\_loss = 0
+                 running_loss += loss.item()
+         running_loss = running_loss / len(data_loader_test)
+         print('Epoch: ', epoch, '| test loss : %0.4f' % running_loss )
+ 
+```
 
-for step, (image, target) in enumerate(data\_loader\_test):
+29. Finally, save the model for using in inferencing tasks.
 
-image, target = image.to(device), target.to(device)
-
-output = model(image)
-
-loss = criterion(output, target)
-
-running\_loss += loss.item()
-
-running\_loss = running\_loss / len(data\_loader\_test)
-
-print(&#39;Epoch: &#39;, epoch, &#39;| test loss : %0.4f&#39; % running\_loss )
-
-1. Finally, save the model for using in inferencing tasks.
-
-# save model
-
-torch.save(model.state\_dict(), &quot;trained\_inception\_v3.pt&quot;)
+```
+      # save model
+      torch.save(model.state_dict(), "trained_inception_v3.pt")
+```
 
 Plotting the train and test loss shows both metrics reducing over training epochs.
 
-![](RackMultipart20220711-1-vf5plv_html_857d2e3b4c81214.gif)
+<table width="100%" align="center">
+ <tr width="100%" align="center">
+    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/inception%20v3.png">
+ </tr>
+</table>
 
 #### 4.1.1.2 Custom Model with CIFAR-10 on PyTorch
 
@@ -1120,259 +1121,197 @@ Follow these steps:
 
 1. Import dependencies including torch, OS, and torchvision.
 
-import torch
-
-import torchvision
-
-import torchvision.transforms as transforms
-
-import matplotlib.pyplot as plot
-
-import numpy as np
-
-1. The output of torchvision datasets are PILImage images of range [0, 1]. Transform them to Tensors of normalized range [-1, 1].
-
-transform = transforms.Compose(
-
-[transforms.ToTensor(),
-
-transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-
-1. During each step of training, a batch of images is processed to compute the loss gradient and perform the optimization. In the following setting, the size of the batch is determined.
-
-batch\_size = 4
-
-1. You can download the dataset train and test datasets as follows. Specify the batch size, shuffle the dataset once, and also specify the number of workers to the number of CPU threads that are used by the data loader to perform efficient multi-process data loading.
-
-train\_set = torchvision.datasets.CIFAR10(root=&#39;./data&#39;, train=True, download=True, transform=transform)
-
-train\_loader = torch.utils.data.DataLoader(train\_set, batch\_size=batch\_size, shuffle=True, num\_workers=2)
-
-1. Follow the same procedure for testing set.
-
-test\_set = torchvision.datasets.CIFAR10(root=&#39;./data&#39;, train=False, download=True, transform=transform)
-
-test\_loader = torch.utils.data.DataLoader(test\_set, batch\_size=batch\_size, shuffle=False, num\_workers=2)
-
-print(&quot;teast set and test loader&quot;)
-
-1. Specify the defined classes of images belonging to this dataset.
-
-classes = (&#39;Aeroplane&#39;, &#39;motorcar&#39;, &#39;bird&#39;, &#39;cat&#39;, &#39;deer&#39;, &#39;puppy&#39;, &#39;frog&#39;, &#39;stallion&#39;, &#39;cruise&#39;, &#39;truck&#39;)
-
-print(&quot;defined classes&quot;)
-
-1. You will be unnormalizing the images and iterating over them.
-
-global image\_number
-
-image\_number = 0
-
-def show\_image(img):
-
-global image\_number
-
-image\_number = image\_number + 1
-
-img = img / 2 + 0.5 # de-normalizing input image
-
-npimg = img.numpy()
-
-plot.imshow(np.transpose(npimg, (1, 2, 0)))
-
-plot.savefig(&quot;fig{}.jpg&quot;.format(image\_number))
-
-print(&quot;fig{}.jpg&quot;.format(image\_number))
-
-plot.show()
-
-data\_iter = iter(train\_loader)
-
-images, labels = data\_iter.next()
-
-show\_image(torchvision.utils.make\_grid(images))
-
-print(&#39; &#39;.join(&#39;%5s&#39; % classes[labels[j]] for j in range(batch\_size)))
-
-print(&quot;image created and saved &quot;)
-
-1. Import the torch.nn for constructing neural networks and torch.nn.functional to use the convolution functions.
-
-import torch.nn as nn
-
-import torch.nn.functional as F
-
-1. Define the CNN (Convolution Neural Networks), relevant activation functions.
-
-class Net(nn.Module):
-
-def \_\_init\_\_(self):
-
-super().\_\_init\_\_()
-
-self.conv1 = nn.Conv2d(3, 6, 5)
-
-self.pool = nn.MaxPool2d(2, 2)
-
-self.conv2 = nn.Conv2d(6, 16, 5)
-
-self.pool = nn.MaxPool2d(2, 2)
-
-self.conv3 = nn.Conv2d(3, 6, 5)
-
-self.fc2 = nn.Linear(120, 84)
-
-self.fc3 = nn.Linear(84, 10)
-
-def forward(self, x):
-
-x = self.pool(F.relu(self.conv1(x)))
-
-x = self.pool(F.relu(self.conv2(x)))
-
-x = torch.flatten(x, 1) # flatten all dimensions except batch
-
-x = F.relu(self.fc1(x))
-
-x = F.relu(self.fc2(x))
-
-x = self.fc3(x)
-
-return x
-
-net = Net()
-
-print(&quot;created Net() &quot;)
-
-1. Also set the optimizer to Stochastic Gradient Descent.
-
-import torch.optim as optim
-
-1. Set the loss criteria. For this example, Cross Entropy Loss [5] is used
-
-criterion = nn.CrossEntropyLoss()
-
-optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
-
-1. You will iterate over epochs. Each epoch is a complete pass through the training data.
-
-for epoch in range(2): # loop over the dataset multiple times
-
-running\_loss = 0.0
-
-for i, data in enumerate(train\_loader, 0):
-
-# get the inputs; data is a list of [inputs, labels]
-
-inputs, labels = data
-
-# zero the parameter gradients
-
-optimizer.zero\_grad()
-
-# forward + backward + optimize
-
-outputs = net(inputs)
-
-loss = criterion(outputs, labels)
-
-loss.backward()
-
-optimizer.step()
-
-# print statistics
-
-running\_loss += loss.item()
-
-if i % 2000 == 1999: # print every 2000 mini-batches
-
-print(&#39;[%d, %5d] loss: %.3f&#39; % (epoch + 1, i + 1, running\_loss / 2000))
-
-running\_loss = 0.0
-
-print(&#39;Finished Training&#39;)
-
-PATH = &#39;./cifar\_net.pth&#39;
-
-torch.save(net.state\_dict(), PATH)
-
-print(&quot;saved model to path :&quot;,PATH)
-
-net = Net()
-
-net.load\_state\_dict(torch.load(PATH))
-
-print(&quot;loding back saved model&quot;)
-
-outputs = net(images)
-
-\_, predicted = torch.max(outputs, 1)
-
-print(&#39;Predicted: &#39;, &#39; &#39;.join(&#39;%5s&#39; % classes[predicted[j]] for j in range(4)))
-
-correct = 0
-
-total = 0
+```
+   import torch
+   import torchvision
+   import torchvision.transforms as transforms
+   import matplotlib.pyplot as plot
+   import numpy as np
+```
+
+2. The output of torchvision datasets are PILImage images of range [0, 1]. Transform them to Tensors of normalized range [-1, 1].
+
+```
+   transform = transforms.Compose(
+           [transforms.ToTensor(),
+               transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+```
+
+3. During each step of training, a batch of images is processed to compute the loss gradient and perform the optimization. In the following setting, the size of the batch is determined.
+
+```
+   batch\_size = 4
+```
+
+4. You can download the dataset train and test datasets as follows. Specify the batch size, shuffle the dataset once, and also specify the number of workers to the number of CPU threads that are used by the data loader to perform efficient multi-process data loading.
+
+```
+   train_set = torchvision.datasets.CIFAR10(root='./data', train=True, 
+   download=True, transform=transform)
+   train_loader = torch.utils.data.DataLoader(train_set, 
+   batch_size=batch_size, shuffle=True, num_workers=2)
+```
+
+5. Follow the same procedure for testing set.
+
+```
+   test_set = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=transform)
+   test_loader = torch.utils.data.DataLoader(test_set, batch_size=batch_size, shuffle=False, num_workers=2)
+   print("teast set and test loader")
+```
+
+6. Specify the defined classes of images belonging to this dataset.
+
+```
+   classes = ('Aeroplane', 'motorcar', 'bird', 'cat', 'deer', 'puppy', 'frog', 'stallion', 'cruise', 'truck')
+   print("defined classes")
+```
+
+7. You will be unnormalizing the images and iterating over them.
+
+```
+   global image_number
+   image_number = 0
+   def show_image(img):
+       global image_number
+       image_number = image_number + 1
+       img = img / 2 + 0.5     # de-normalizing input image
+       npimg = img.numpy()
+       plot.imshow(np.transpose(npimg, (1, 2, 0)))
+       plot.savefig("fig{}.jpg".format(image_number))
+       print("fig{}.jpg".format(image_number))
+       plot.show()
+   data_iter = iter(train_loader)
+   images, labels = data_iter.next()
+   show_image(torchvision.utils.make_grid(images))
+   print(' '.join('%5s' % classes[labels[j]] for j in range(batch_size)))
+   print("image created and saved ")
+```
+
+8. Import the torch.nn for constructing neural networks and torch.nn.functional to use the convolution functions.
+
+```
+   import torch.nn as nn
+   import torch.nn.functional as F
+```
+
+9. Define the CNN (Convolution Neural Networks), relevant activation functions.
+
+```
+    class Net(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.conv1 = nn.Conv2d(3, 6, 5)
+            self.pool = nn.MaxPool2d(2, 2)
+            self.conv2 = nn.Conv2d(6, 16, 5)
+       self.pool = nn.MaxPool2d(2, 2)
+       self.conv3 = nn.Conv2d(3, 6, 5)
+            self.fc2 = nn.Linear(120, 84)
+            self.fc3 = nn.Linear(84, 10)
+
+        def forward(self, x):
+            x = self.pool(F.relu(self.conv1(x)))
+            x = self.pool(F.relu(self.conv2(x)))
+            x = torch.flatten(x, 1) # flatten all dimensions except batch
+            x = F.relu(self.fc1(x))
+            x = F.relu(self.fc2(x))
+            x = self.fc3(x)
+            return x
+```
+
+```
+    net = Net()
+    print("created Net() ")
+```
+
+10. Also set the optimizer to Stochastic Gradient Descent.
+
+```
+    import torch.optim as optim
+```
+
+11. Set the loss criteria. For this example, Cross Entropy Loss [5] is used
+
+```
+    criterion = nn.CrossEntropyLoss()
+    optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
+```
+
+12. You will iterate over epochs. Each epoch is a complete pass through the training data.
+
+```
+     for epoch in range(2):  # loop over the dataset multiple times
+
+         running_loss = 0.0
+         for i, data in enumerate(train_loader, 0):
+             # get the inputs; data is a list of [inputs, labels]
+             inputs, labels = data
+
+             # zero the parameter gradients
+             optimizer.zero_grad()
+
+             # forward + backward + optimize
+             outputs = net(inputs)
+             loss = criterion(outputs, labels)
+             loss.backward()
+             optimizer.step()
+
+             # print statistics
+             running_loss += loss.item()
+             if i % 2000 == 1999:    # print every 2000 mini-batches
+                 print('[%d, %5d] loss: %.3f' % (epoch + 1, i + 1, running_loss / 2000))
+                 running_loss = 0.0
+     print('Finished Training')
+
+     PATH = './cifar_net.pth'
+     torch.save(net.state_dict(), PATH)
+     print("saved model to path :",PATH)
+     net = Net()
+     net.load_state_dict(torch.load(PATH))
+     print("loding back saved model")
+     outputs = net(images)
+     _, predicted = torch.max(outputs, 1)
+     print('Predicted: ', ' '.join('%5s' % classes[predicted[j]] for j in range(4)))
+     correct = 0
+     total = 0
+```
 
 As this is not training, calculation of the gradients for outputs is not required.
 
-# calculate outputs by running images through the network
+```
+     # calculate outputs by running images through the network
+     with torch.no_grad():
+         for data in test_loader:
+             images, labels = data
+             # calculate outputs by running images through the network
+             outputs = net(images)
+             # the class with the highest energy is what you can choose as prediction
+             _, predicted = torch.max(outputs.data, 1)
+             total += labels.size(0)
+             correct += (predicted == labels).sum().item()
+     print('Accuracy of the network on the 10000 test images: %d %%' % ( 100 * correct / total))
+     # prepare to count predictions for each class
+     correct_pred = {classname: 0 for classname in classes}
+     total_pred = {classname: 0 for classname in classes}
+```
 
-with torch.no\_grad():
-
-for data in test\_loader:
-
-images, labels = data
-
-# calculate outputs by running images through the network
-
-outputs = net(images)
-
-# the class with the highest energy is what you can choose as prediction
-
-\_, predicted = torch.max(outputs.data, 1)
-
-total += labels.size(0)
-
-correct += (predicted == labels).sum().item()
-
-print(&#39;Accuracy of the network on the 10000 test images: %d %%&#39; % ( 100 \* correct / total))
-
-# prepare to count predictions for each class
-
-correct\_pred = {classname: 0 for classname in classes}
-
-total\_pred = {classname: 0 for classname in classes}
-
-# again no gradients needed
-
-with torch.no\_grad():
-
-for data in test\_loader:
-
-images, labels = data
-
-outputs = net(images)
-
-\_, predictions = torch.max(outputs, 1)
-
-# collect the correct predictions for each class
-
-for label, prediction in zip(labels, predictions):
-
-if label == prediction:
-
-correct\_pred[classes[label]] += 1
-
-total\_pred[classes[label]] += 1
-
-# print accuracy for each class
-
-for classname, correct\_count in correct\_pred.items():
-
-accuracy = 100 \* float(correct\_count) / total\_pred[classname]
-
-print(&quot;Accuracy for class {:5s} is: {:.1f} %&quot;.format(classname,accuracy))
+```
+     # again no gradients needed
+     with torch.no_grad():
+         for data in test_loader:
+             images, labels = data
+             outputs = net(images)
+             _, predictions = torch.max(outputs, 1)
+             # collect the correct predictions for each class
+             for label, prediction in zip(labels, predictions):
+                 if label == prediction:
+                     correct_pred[classes[label]] += 1
+                 total_pred[classes[label]] += 1
+     # print accuracy for each class
+     for classname, correct_count in correct_pred.items():
+         accuracy = 100 * float(correct_count) / total_pred[classname]
+         print("Accuracy for class {:5s} is: {:.1f} %".format(classname,accuracy))
+```
 
 #### 4.1.1.3 Case Study: TensorFlow with Fashion MNIST
 
@@ -1384,7 +1323,7 @@ The dataset has 60,000 images that you will use to train the network and 10,000 
 
 The source code for this can be accessed from this repository:
 
-_[https://github.com/anubhavamd/tensorflow\_fashionmnist](https://github.com/anubhavamd/tensorflow_fashionmnist)_
+[https://github.com/anubhavamd/tensorflow\_fashionmnist](https://github.com/anubhavamd/tensorflow_fashionmnist)
 
 Let us understand the code step by step.
 
@@ -1392,89 +1331,117 @@ Follow these steps:
 
 1. Import libraries like Tensorflow, Numpy, and Matplotlib for training neural network, calculations, and plotting graphs respectively.
 
-import tensorflow as tf
+```
+   import tensorflow as tf
+   import numpy as np
+   import matplotlib.pyplot as plt
+```
 
-import numpy as np
+2. To verify that TensorFlow is installed, you can print the version of TensorFlow by using the below print statement:
 
-import matplotlib.pyplot as plt
+```
+   print(tf.\_version\_\_)
+```
 
-1. To verify that TensorFlow is installed, you can print the version of TensorFlow by using the below print statement:
+   To analyse and train a neural network upon the MNIST Fashion Dataset, load the dataset from the available internal libraries. Loading the dataset returns four        NumPy arrays. The train\_images and train\_labels arrays are the training set—the data the model uses to learn.
 
-print(tf.\_version\_\_)
+3. The model is tested against the test set, test\_images, and test\_labels arrays.
 
-To analyse and train a neural network upon the MNIST Fashion Dataset, load the dataset from the available internal libraries. Loading the dataset returns four NumPy arrays. The train\_images and train\_labels arrays are the training set—the data the model uses to learn.
+```
+   fashion_mnist = tf.keras.datasets.fashion_mnist 
+   (train_images, train_labels), (test_images, test_labels) = 
+   fashion_mnist.load_data()
+```
 
-1. The model is tested against the test set, test\_images, and test\_labels arrays.
+   Since you have 10 types of images in the dataset, assign labels from 0 to 9. Each image is assigned one label. The images are 28x28 NumPy arrays, with pixel values    ranging from 0 to 255.
 
-fashion\_mnist = tf.keras.datasets.fashion\_mnist
+4. Each image is mapped to a single label. Since the class names are not included with the dataset, store them and later use them when plotting the images:
 
-(train\_images, train\_labels), (test\_images, test\_labels) = fashion\_mnist.load\_data()
+```
+   class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 
+   'Coat','Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
+```
 
-Since you have 10 types of images in the dataset, assign labels from 0 to 9. Each image is assigned one label. The images are 28x28 NumPy arrays, with pixel values ranging from 0 to 255.
+5. To explore the dataset by knowing its dimensions:
 
-1. Each image is mapped to a single label. Since the class names are not included with the dataset, store them and later use them when plotting the images:
+```
+   train\_images.shape
+```
 
-class\_names = [&#39;T-shirt/top&#39;, &#39;Trouser&#39;, &#39;Pullover&#39;, &#39;Dress&#39;, &#39;Coat&#39;,&#39;Sandal&#39;, &#39;Shirt&#39;, &#39;Sneaker&#39;, &#39;Bag&#39;, &#39;Ankle boot&#39;]
+6. To print the size of this training set:
 
-1. To explore the dataset by knowing its dimensions:
+```
+   print(len(train\_labels))
+```  
 
-train\_images.shape
+7. To print the labels of this training set:
 
-1. To print the size of this training set:
+```
+   print(train\_labels)
+```
 
-print(len(train\_labels))
+8. Preprocess the data before training the network, and you can start inspecting the first image, as its pixels will fall in the range of 0 to 255.
 
-1. To print the labels of this training set:
+```
+   plt.figure()
+   plt.imshow(train\_images[0])
+   plt.colorbar()
+   plt.grid(False)
+   plt.show()
+```
+<table width="100%" align="center">
+ <tr width="100%" align="center">
+    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/mnist%201.png">
+ </tr>
+</table>
 
-print(train\_labels)
+9. From the above picture, you can see that values are from 0 to 255. Before training this on the neural network, you must bring them in the range of 0 to 1. Hence, divide the values by 255.
 
-1. Preprocess the data before training the network, and you can start inspecting the first image, as its pixels will fall in the range of 0 to 255.
+```
+   train\_images = train\_images / 255.0
+   test\_images = test\_images / 255.0
+```
 
-plt.figure()
- plt.imshow(train\_images[0])
- plt.colorbar()
- plt.grid(False)
- plt.show()
+10. To ensure the data is in the correct format and ready to build and train the network, let us display the first 25 images from the training set and the class name below each image.
 
-![](RackMultipart20220711-1-vf5plv_html_78c8f3ca1abe8468.png)
+```
+    plt.figure(figsize=(10,10))
+    for i in range(25):
+        plt.subplot(5,5,i+1)
+        plt.xticks([])
+        plt.yticks([])
+        plt.grid(False)
+        plt.imshow(train_images[i], cmap=plt.cm.binary)
+        plt.xlabel(class_names[train_labels[i]])
+    plt.show()
+```
+<table width="100%" align="center">
+ <tr width="100%" align="center">
+    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/mnist%202.png">
+ </tr>
+</table>
 
-1. From the above picture, you can see that values are from 0 to 255. Before training this on the neural network, you must bring them in the range of 0 to 1. Hence, divide the values by 255.
+11. The basic building block of a neural network is the layer. Layers extract representations from the data fed into them. Deep Learning consists of chaining together simple layers. Most layers, such as tf.keras.layers.Dense, have parameters that are learned during training.
 
-train\_images = train\_images / 255.0
-
- test\_images = test\_images / 255.0
-
-1. To ensure the data is in the correct format and ready to build and train the network, let us display the first 25 images from the training set and the class name below each image.
-
-plt.figure(figsize=(10,10))
- for i in range(25):
-     plt.subplot(5,5,i+1)
-     plt.xticks([])
-     plt.yticks([])
-     plt.grid(False)
-     plt.imshow(train\_images[i], cmap=plt.cm.binary)
-     plt.xlabel(class\_names[train\_labels[i]])
- plt.show()
-
-![](RackMultipart20220711-1-vf5plv_html_2de027c47ebf846.png)
-
-1. The basic building block of a neural network is the layer. Layers extract representations from the data fed into them. Deep Learning consists of chaining together simple layers. Most layers, such as tf.keras.layers.Dense, have parameters that are learned during training.
-
+```
 model = tf.keras.Sequential([
-     tf.keras.layers.Flatten(input\_shape=(28, 28)),
-     tf.keras.layers.Dense(128, activation=&#39;relu&#39;),
-     tf.keras.layers.Dense(10)
- ])
+    tf.keras.layers.Flatten(input_shape=(28, 28)),
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dense(10)
+])
+```
 
 - The first layer in this network, tf.keras.layers.Flatten, transforms the format of the images from a two-dimensional array (of 28 by 28 pixels) to a one-dimensional array (of 28 \* 28 = 784 pixels). Think of this layer as unstacking rows of pixels in the image and lining them up. This layer has no parameters to learn; it only reformats the data.
 
 - After the pixels are flattened, the network consists of a sequence of two tf.keras.layers.Dense layers. These are densely connected, or fully connected, neural layers. The first Dense layer has 128 nodes (or neurons). The second (and last) layer returns a logits array with length of 10. Each node contains a score that indicates the current image belongs to one of the 10 classes.
 
-1. You will need to add Loss function, Metrics, and Optimizer at the time of model compilation.
+12. You will need to add Loss function, Metrics, and Optimizer at the time of model compilation.
 
-model.compile(optimizer=&#39;adam&#39;,
-               loss=tf.keras.losses.SparseCategoricalCrossentropy(from\_logits=True),
-               metrics=[&#39;accuracy&#39;])
+```
+    model.compile(optimizer='adam',
+                  loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+                  metrics=['accuracy'])
+```
 
 Loss function —This measures how accurate the model is during training. When you are looking to minimize this function to &quot;steer&quot; the model in the right direction.
 
@@ -1485,131 +1452,154 @@ The following example uses accuracy, the fraction of the correctly classified im
 
 You will now train the neural network model by following these steps:
 
-1. Feed the training data to the model. In this example, the training data is in the train\_images and train\_labels arrays.
+13. Feed the training data to the model. In this example, the training data is in the train_images and train_labels arrays.
 
-1. The model learns to associate images and labels.
+14. The model learns to associate images and labels.
 
-1. You ask the model to make predictions about a test set—in this example, the test\_images array.
+15. You ask the model to make predictions about a test set—in this example, the test_images array.
 
-1. Verify that the predictions match the labels from the test\_labels array.
+16. Verify that the predictions match the labels from the test_labels array.
 
-1. To start training, call the model.fit method—so called because it &quot;fits&quot; the model to the training data.
+17. To start training, call the model.fit method—so called because it "fits" the model to the training data.
 
-model.fit(train\_images, train\_labels, epochs=10)
+```
+    model.fit(train_images, train_labels, epochs=10)
+```
 
-1. Let us now compare how the model will perform on the test dataset.
+18. Let us now compare how the model will perform on the test dataset.
 
-test\_loss, test\_acc = model.evaluate(test\_images, test\_labels, verbose=2)
+```
+    test_loss, test_acc = model.evaluate(test_images,  test_labels, verbose=2)
+    print('\nTest accuracy:', test_acc)
+```
 
-print(&#39;\nTest accuracy:&#39;, test\_acc)
+19. With the model trained, you can use it to make predictions about some images: the model&#39;s linear outputs, logits. Attach a softmax layer to convert the logits to probabilities, making it easier to interpret.
 
-1. With the model trained, you can use it to make predictions about some images: the model&#39;s linear outputs, logits. Attach a softmax layer to convert the logits to probabilities, making it easier to interpret.
+```
+    probability_model = tf.keras.Sequential([model, 
+                                             tf.keras.layers.Softmax()])
 
-probability\_model = tf.keras.Sequential([model,
+    predictions = probability_model.predict(test_images)
+```
 
-tf.keras.layers.Softmax()])
+20. Here, the model has predicted the label for each image in the testing set. Let's take a look at the first prediction:
 
-predictions = probability\_model.predict(test\_images)
+```
+    predictions[0]
+```
 
-1. Here, the model has predicted the label for each image in the testing set. Let&#39;s take a look at the first prediction:
+21. A prediction is an array of 10 numbers. They represent the model's "confidence" that the image corresponds to each of the 10 different articles of clothing. You can see which label has the highest confidence value:
 
-predictions[0]
+```
+    np.argmax(predictions[0])
+```
 
-1. A prediction is an array of 10 numbers. They represent the model&#39;s &quot;confidence&quot; that the image corresponds to each of the 10 different articles of clothing. You can see which label has the highest confidence value:
+22. Plot a graph to look at the full set of 10 class predictions.
 
-np.argmax(predictions[0])
+```
+    def plot_image(i, predictions_array, true_label, img):
+      true_label, img = true_label[i], img[i]
+      plt.grid(False)
+      plt.xticks([])
+      plt.yticks([])
 
-1. Plot a graph to look at the full set of 10 class predictions.
+      plt.imshow(img, cmap=plt.cm.binary)
 
-def plot\_image(i, predictions\_array, true\_label, img):
-   true\_label, img = true\_label[i], img[i]
-   plt.grid(False)
-   plt.xticks([])
-   plt.yticks([])
+      predicted_label = np.argmax(predictions_array)
+      if predicted_label == true_label:
+        color = 'blue'
+      else:
+        color = 'red'
 
-   plt.imshow(img, cmap=plt.cm.binary)
+      plt.xlabel("{} {:2.0f}% ({})".format(class_names[predicted_label],
+                                    100*np.max(predictions_array),
+                                    class_names[true_label]),
+                                    color=color)
 
-   predicted\_label = np.argmax(predictions\_array)
-   if predicted\_label == true\_label:
-     color = &#39;blue&#39;
-   else:
-     color = &#39;red&#39;
+    def plot_value_array(i, predictions_array, true_label):
+      true_label = true_label[i]
+      plt.grid(False)
+      plt.xticks(range(10))
+      plt.yticks([])
+      thisplot = plt.bar(range(10), predictions_array, color="#777777")
+      plt.ylim([0, 1])
+      predicted_label = np.argmax(predictions_array)
 
-   plt.xlabel(&quot;{} {:2.0f}% ({})&quot;.format(class\_names[predicted\_label],
-                                 100\*np.max(predictions\_array),
-                                 class\_names[true\_label]),
-                                 color=color)
+      thisplot[predicted_label].set_color('red')
+      thisplot[true_label].set_color('blue')
+```
 
- def plot\_value\_array(i, predictions\_array, true\_label):
-   true\_label = true\_label[i]
-   plt.grid(False)
-   plt.xticks(range(10))
-   plt.yticks([])
-   thisplot = plt.bar(range(10), predictions\_array, color=&quot;#777777&quot;)
-   plt.ylim([0, 1])
-   predicted\_label = np.argmax(predictions\_array)
+23. With the model trained, you can use it to make predictions about some images. Let&#39;s look at the 0th image predictions and the prediction array. Correct prediction labels are blue, and incorrect prediction labels are red. The number gives the percentage (out of 100) for the predicted label.
 
-   thisplot[predicted\_label].set\_color(&#39;red&#39;)
-   thisplot[true\_label].set\_color(&#39;blue&#39;)
+```
+    i = 0
+    plt.figure(figsize=(6,3))
+    plt.subplot(1,2,1)
+    plot_image(i, predictions[i], test_labels, test_images)
+    plt.subplot(1,2,2)
+    plot_value_array(i, predictions[i],  test_labels)
+    plt.show()
+```
+<table width="100%" align="center">
+ <tr width="100%" align="center">
+    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/mnist%203.png">
+ </tr>
+</table>
 
-1. With the model trained, you can use it to make predictions about some images. Let&#39;s look at the 0th image predictions and the prediction array. Correct prediction labels are blue, and incorrect prediction labels are red. The number gives the percentage (out of 100) for the predicted label.
+```
+     i = 12
+     plt.figure(figsize=(6,3))
+     plt.subplot(1,2,1)
+     plot_image(i, predictions[i], test_labels, test_images)
+     plt.subplot(1,2,2)
+     plot_value_array(i, predictions[i],  test_labels)
+     plt.show()
+```
+<table width="100%" align="center">
+ <tr width="100%" align="center">
+    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/mnist%204.png">
+ </tr>
+</table>
 
-i = 0
+24. Finally, use the trained model to predict a single image.
 
-plt.figure(figsize=(6,3))
+```
+    # Grab an image from the test dataset.
+    img = test_images[1]
+    print(img.shape)
+```
 
-plt.subplot(1,2,1)
+25. tf.keras models are optimized to make predictions on a batch, or collection, of examples at once. Accordingly, even though you are using a single image, you need to add it to a list.
 
-plot\_image(i, predictions[i], test\_labels, test\_images)
+```
+    # Add the image to a batch where it's the only member.
+    img = (np.expand_dims(img,0))
 
-plt.subplot(1,2,2)
+    print(img.shape)
+```
 
-plot\_value\_array(i, predictions[i], test\_labels)
+26. Now predict the correct label for this image.
 
-plt.show()
+```
+    predictions_single = probability_model.predict(img)
 
-![](RackMultipart20220711-1-vf5plv_html_10494cfb42a23aaf.png)
+    print(predictions_single)
 
-i = 12
- plt.figure(figsize=(6,3))
- plt.subplot(1,2,1)
- plot\_image(i, predictions[i], test\_labels, test\_images)
- plt.subplot(1,2,2)
- plot\_value\_array(i, predictions[i],  test\_labels)
- plt.show()
+    plot_value_array(1, predictions_single[0], test_labels)
+    _ = plt.xticks(range(10), class_names, rotation=45)
+    plt.show()
+```
+<table width="100%" align="center">
+ <tr width="100%" align="center">
+    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/mnist%205.png">
+ </tr>
+</table>
 
-![](RackMultipart20220711-1-vf5plv_html_e494e971a75130d7.png)
+27. tf.keras.Model.predict returns a list of lists—one list for each image in the batch of data. Grab the predictions for our (only) image in the batch.
 
-1. Finally, use the trained model to predict a single image.
-
-# Grab an image from the test dataset.
-
-img = test\_images[1]
-
-print(img.shape)
-
-1. tf.keras models are optimized to make predictions on a batch, or collection, of examples at once. Accordingly, even though you are using a single image, you need to add it to a list.
-
-# Add the image to a batch where it&#39;s the only member.
- img = (np.expand\_dims(img,0))
-
- print(img.shape)
-
-1. Now predict the correct label for this image.
-
-predictions\_single = probability\_model.predict(img)
-
- print(predictions\_single)
-
-plot\_value\_array(1, predictions\_single[0], test\_labels)
- \_ = plt.xticks(range(10), class\_names, rotation=45)
- plt.show()
-
-![](RackMultipart20220711-1-vf5plv_html_af45e3a29d375079.png)
-
-1. [tf.keras.Model.predict](https://www.tensorflow.org/api_docs/python/tf/keras/Model#predict) returns a list of lists—one list for each image in the batch of data. Grab the predictions for our (only) image in the batch.
-
-np.argmax(predictions\_single[0])
+```
+    np.argmax(predictions_single[0])
+```
 
 #### 4.1.1.4 Case Study: TensorFlow with Text Classification
 
@@ -1619,203 +1609,256 @@ Follow these steps:
 
 1. Import the necessary libraries.
 
-import matplotlib.pyplot as plt
- import os
- import re
- import shutil
- import string
- import tensorflow as tf
-
- from tensorflow.keras import layers
- from tensorflow.keras import losses
-
-1. Get the data for the text classification, and extract the database from the given link of IMDB.
-
-url = &quot;https://ai.stanford.edu/~amaas/data/sentiment/aclImdb\_v1.tar.gz&quot;
-
- dataset = tf.keras.utils.get\_file(&quot;aclImdb\_v1&quot;, url,
-                                     untar=True, cache\_dir=&#39;.&#39;,
-                                     cache\_subdir=&#39;&#39;)
-
-![](RackMultipart20220711-1-vf5plv_html_282e9c05d3de6971.png)
-
-1. Fetch the data from the directory.
-
-dataset\_dir = os.path.join(os.path.dirname(dataset), &#39;aclImdb&#39;)
-
-print(os.listdir(dataset\_dir))
-
-1. Load the data for training purposes.
-
-train\_dir = os.path.join(dataset\_dir, &#39;train&#39;)
- os.listdir(train\_dir)
-
-![](RackMultipart20220711-1-vf5plv_html_8e5a380a0aaa0ac3.png)
-
-1. The directories contain many text files, each of which is a single movie review. To look at one of them, follow this command:
-
-sample\_file = os.path.join(train\_dir, &#39;pos/1181\_9.txt&#39;)
- with open(sample\_file) as f:
-   print(f.read())
-
-1. As the IMDB dataset contains additional folders, remove them before using this utility.
-
-remove\_dir = os.path.join(train\_dir, &#39;unsup&#39;)
- shutil.rmtree(remove\_dir)
-
-batch\_size = 32
- seed = 42
-
-1. The IMDB dataset has already been divided into train and test, but it lacks a validation set. Create a validation set using an 80:20 split of the training data by using the validation\_split argument below:
-
-raw\_train\_ds=tf.keras.utils.text\_dataset\_from\_directory(&#39;aclImdb/train&#39;,batch\_size=batch\_size, validation\_split=0.2,subset=&#39;training&#39;, seed=seed)
-
-1. As you will see in a moment, we can train a model by passing a dataset directly to model.fit. If you are new to tf.data, you can also iterate over the dataset and print out a few examples as follows:
-
-for text\_batch, label\_batch in raw\_train\_ds.take(1):
-   for i in range(3):
-     print(&quot;Review&quot;, text\_batch.numpy()[i])
-     print(&quot;Label&quot;, label\_batch.numpy()[i])
-
-1. The labels are 0 or 1. To see which of these correspond to positive and negative movie reviews, you can check the class\_names property on the dataset.
-
-print(&quot;Label 0 corresponds to&quot;, raw\_train\_ds.class\_names[0])
- print(&quot;Label 1 corresponds to&quot;, raw\_train\_ds.class\_names[1])
-
-1. Next, create a validation and test dataset. Use the remaining 5,000 reviews from the training set for validation into 2 classes of 2,500 reviews in each.
-
-raw\_val\_ds = tf.keras.utils.text\_dataset\_from\_directory(&#39;aclImdb/train&#39;,
- batch\_size=batch\_size,validation\_split=0.2,subset=&#39;validation&#39;, seed=seed)
-
-raw\_test\_ds =
-
-tf.keras.utils.text\_dataset\_from\_directory(
-     &#39;aclImdb/test&#39;,
-     batch\_size=batch\_size)
-
-1. Preparing the data for training Next, standardize, tokenize, and vectorize the data using the helpful [tf.keras.layers.TextVectorization](https://www.tensorflow.org/api_docs/python/tf/keras/layers/TextVectorization) layer.
-
-def custom\_standardization(input\_data):
-   lowercase = tf.strings.lower(input\_data)
-   stripped\_html = tf.strings.regex\_replace(lowercase, &#39;\&lt;br/\&gt;&#39;, &#39; &#39;)
-   return tf.strings.regex\_replace(stripped\_html,                                 &#39;[%s]&#39; % re.escape(string.punctuation),&#39;&#39;)
-
-1. Next, create a TextVectorization layer. Use this layer to standardize, tokenize, and vectorize our data. Set the output\_mode to int to create unique integer indices for each token. Note that we are using the default split function and the custom standardization function you defined above. You&#39;ll also define some constants for the model, like an explicit maximum sequence\_length, which will cause the layer to pad or truncate sequences to exactly sequence\_length values.
-
-max\_features = 10000
-
-sequence\_length = 250
-
-vectorize\_layer = layers.TextVectorization(
-
-standardize=custom\_standardization,
-
-max\_tokens=max\_features,
-
-output\_mode=&#39;int&#39;,
-
-output\_sequence\_length=sequence\_length)
-
-1. Next, call adapt to fit the state of the preprocessing layer to the dataset. This causes the model to build an index of strings to integers.
-
-# Make a text-only dataset (without labels), then call adapt
-
-train\_text = raw\_train\_ds.map(lambda x, y: x)
-
-vectorize\_layer.adapt(train\_text)
-
-1. Create a function to see the result of using this layer to preprocess some data.
-
-def vectorize\_text(text, label):
-   text = tf.expand\_dims(text, -1)
-   return vectorize\_layer(text), label
-
-text\_batch, label\_batch = next(iter(raw\_train\_ds))
- first\_review, first\_label = text\_batch[0], label\_batch[0]
- print(&quot;Review&quot;, first\_review)
- print(&quot;Label&quot;, raw\_train\_ds.class\_names[first\_label])
- print(&quot;Vectorized review&quot;, vectorize\_text(first\_review, first\_label))
-
-![](RackMultipart20220711-1-vf5plv_html_94829ae0bbe0ae71.png)
-
-1. As you can see above, each token has been replaced by an integer. Look up the token (string) that each integer corresponds to by calling get\_vocabulary() on the layer.
-
-print(&quot;1287 ---\&gt; &quot;,vectorize\_layer.get\_vocabulary()[1287])
- print(&quot; 313 ---\&gt; &quot;,vectorize\_layer.get\_vocabulary()[313])
- print(&#39;Vocabulary size: {}&#39;.format(len(vectorize\_layer.get\_vocabulary())))
-
-1. You are nearly ready to train your model. As a final preprocessing step, apply the TextVectorization layer we created earlier to the train, validation, and test dataset.
-
-train\_ds = raw\_train\_ds.map(vectorize\_text)
- val\_ds = raw\_val\_ds.map(vectorize\_text)
- test\_ds = raw\_test\_ds.map(vectorize\_text)
-
-1. The cache() function keeps data in memory after it is loaded off disk. This ensures the dataset does not become a bottleneck while training your model. If your dataset is too large to fit into memory, you can also use this method to create a performant on-disk cache, which is more efficient to read than many small files.
-
-1. The prefetch() function overlaps data preprocessing and model execution while training.
-
-AUTOTUNE = tf.data.AUTOTUNE
-
- train\_ds = train\_ds.cache().prefetch(buffer\_size=AUTOTUNE)
- val\_ds = val\_ds.cache().prefetch(buffer\_size=AUTOTUNE)
- test\_ds = test\_ds.cache().prefetch(buffer\_size=AUTOTUNE)
-
-1. It is time to create your neural network.
-
-embedding\_dim = 16
- model = tf.keras.Sequential([layers.Embedding(max\_features + 1, embedding\_dim),layers.Dropout(0.2),layers.GlobalAveragePooling1D(),
- layers.Dropout(0.2),layers.Dense(1)])
- model.summary()
-
-![](RackMultipart20220711-1-vf5plv_html_5f2beef7fe118a8d.png)
-
-1. A model needs a loss function and an optimizer for training. Since this is a binary classification problem and the model outputs a probability (a single-unit layer with a sigmoid activation), use [losses.BinaryCrossentropy](https://www.tensorflow.org/api_docs/python/tf/keras/losses/BinaryCrossentropy) loss function.
-
-model.compile(loss=losses.BinaryCrossentropy(from\_logits=True),
- optimizer=&#39;adam&#39;,metrics=tf.metrics.BinaryAccuracy(threshold=0.0))
-
-1. Train the model by passing the dataset object to the fit method.
-
-epochs = 10
- history = model.fit(train\_ds,validation\_data=val\_ds,epochs=epochs)
-
-![](RackMultipart20220711-1-vf5plv_html_e5d54250867f7018.png)
-
-1. You see how the model performs. Two values are returned: loss (a number that represents our error, lower values are better) and accuracy.
-
-loss, accuracy = model.evaluate(test\_ds)
-
- print(&quot;Loss: &quot;, loss)
- print(&quot;Accuracy: &quot;, accuracy)
-
-1. model.fit() returns a History object that contains a dictionary with everything that happened during training.
-
-history\_dict = history.history
- history\_dict.keys()
-
-1. There are four entries, one for each monitored metric during training and validation. You can use these to plot the training and validation loss for comparison, as well as the training and validation accuracy:
-
-acc = history\_dict[&#39;binary\_accuracy&#39;]
- val\_acc = history\_dict[&#39;val\_binary\_accuracy&#39;]
- loss = history\_dict[&#39;loss&#39;]
- val\_loss = history\_dict[&#39;val\_loss&#39;]
-
- epochs = range(1, len(acc) + 1)
-
- # &quot;bo&quot; is for &quot;blue dot&quot;
- plt.plot(epochs, loss, &#39;bo&#39;, label=&#39;Training loss&#39;)
- # b is for &quot;solid blue line&quot;
- plt.plot(epochs, val\_loss, &#39;b&#39;, label=&#39;Validation loss&#39;)
- plt.title(&#39;Training and validation loss&#39;)
- plt.xlabel(&#39;Epochs&#39;)
- plt.ylabel(&#39;Loss&#39;)
- plt.legend()
-
- plt.show()
-
-![](RackMultipart20220711-1-vf5plv_html_93a921dcfbabd66d.png)
-
-![](RackMultipart20220711-1-vf5plv_html_3a0a465f0847bfa7.png)
+```
+   import matplotlib.pyplot as plt
+    import os
+    import re
+    import shutil
+    import string
+    import tensorflow as tf
+
+    from tensorflow.keras import layers
+    from tensorflow.keras import losses
+ ```
+ 
+ 2. Get the data for the text classification, and extract the database from the given link of IMDB.
+
+```
+    url = "https://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz"
+
+    dataset = tf.keras.utils.get_file("aclImdb_v1", url,
+                                        untar=True, cache_dir='.',
+                                        cache_subdir='')
+```
+<table width="100%" align="center">
+ <tr width="100%" align="center">
+    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/Text%20Classification%201.png">
+ </tr>
+</table>
+
+3. Fetch the data from the directory.
+
+```
+   dataset_dir = os.path.join(os.path.dirname(dataset), 'aclImdb')
+   print(os.listdir(dataset_dir))	
+```
+
+4. Load the data for training purposes.
+
+```
+   train_dir = os.path.join(dataset_dir, 'train')
+   os.listdir(train_dir)
+```
+<table width="100%" align="center">
+ <tr width="100%" align="center">
+    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/Text%20Classification%202.png">
+ </tr>
+</table>
+
+5. The directories contain many text files, each of which is a single movie review. To look at one of them, follow this command:
+
+```
+   sample_file = os.path.join(train_dir, 'pos/1181_9.txt')
+   with open(sample_file) as f:
+     print(f.read())
+```
+
+6. As the IMDB dataset contains additional folders, remove them before using this utility.
+
+```
+   remove_dir = os.path.join(train_dir, 'unsup')
+   shutil.rmtree(remove_dir)
+   batch_size = 32
+   seed = 42
+```
+
+7. The IMDB dataset has already been divided into train and test, but it lacks a validation set. Create a validation set using an 80:20 split of the training data by using the validation\_split argument below:
+
+```
+   raw_train_ds=tf.keras.utils.text_dataset_from_directory('aclImdb/train',batch_size=batch_size, validation_split=0.2,subset='training', seed=seed)
+```
+
+8. As you will see in a moment, we can train a model by passing a dataset directly to model.fit. If you are new to tf.data, you can also iterate over the dataset and print out a few examples as follows:
+
+```
+   for text_batch, label_batch in raw_train_ds.take(1):
+     for i in range(3):
+       print("Review", text_batch.numpy()[i])
+       print("Label", label_batch.numpy()[i])
+```
+
+9. The labels are 0 or 1. To see which of these correspond to positive and negative movie reviews, you can check the class\_names property on the dataset.
+
+```
+    print("Label 0 corresponds to", raw_train_ds.class_names[0])
+    print("Label 1 corresponds to", raw_train_ds.class_names[1])
+```
+
+10. Next, create a validation and test dataset. Use the remaining 5,000 reviews from the training set for validation into 2 classes of 2,500 reviews in each.
+
+```
+    raw_val_ds = tf.keras.utils.text_dataset_from_directory('aclImdb/train', 
+    batch_size=batch_size,validation_split=0.2,subset='validation', seed=seed)
+
+    raw_test_ds = 
+    tf.keras.utils.text_dataset_from_directory(
+        'aclImdb/test', 
+        batch_size=batch_size)
+```
+
+11. Preparing the data for training  Next, standardize, tokenize, and vectorize the data using the helpful tf.keras.layers.TextVectorization layer.
+
+```
+    def custom_standardization(input_data):
+      lowercase = tf.strings.lower(input_data)
+      stripped_html = tf.strings.regex_replace(lowercase, '<br/>', ' ')
+      return tf.strings.regex_replace(stripped_html,                                 
+      '[%s]' % re.escape(string.punctuation),'')
+```
+
+12. Next, create a TextVectorization layer. Use this layer to standardize, tokenize, and vectorize our data. Set the output_mode to int to create unique integer indices for each token. Note that we are using the default split function and the custom standardization function you defined above. You'll also define some constants for the model, like an explicit maximum sequence_length, which will cause the layer to pad or truncate sequences to exactly sequence_length values.
+
+```
+    max_features = 10000
+    sequence_length = 250
+    vectorize_layer = layers.TextVectorization(
+        standardize=custom_standardization,
+        max_tokens=max_features,
+        output_mode='int',
+        output_sequence_length=sequence_length)
+```
+
+13. Next, call adapt to fit the state of the preprocessing layer to the dataset. This causes the model to build an index of strings to integers.
+
+```
+    # Make a text-only dataset (without labels), then call adapt
+    train_text = raw_train_ds.map(lambda x, y: x)
+    vectorize_layer.adapt(train_text)
+```
+
+14. Create a function to see the result of using this layer to preprocess some data.
+
+```
+    def vectorize_text(text, label):
+      text = tf.expand_dims(text, -1)
+      return vectorize_layer(text), label
+
+    text_batch, label_batch = next(iter(raw_train_ds))
+    first_review, first_label = text_batch[0], label_batch[0]
+    print("Review", first_review)
+    print("Label", raw_train_ds.class_names[first_label])
+    print("Vectorized review", vectorize_text(first_review, first_label))
+```
+<table width="100%" align="center">
+ <tr width="100%" align="center">
+    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/Text%20Classification%203.png">
+ </tr>
+</table>
+
+15. As you can see above, each token has been replaced by an integer. Look up the token (string) that each integer corresponds to by calling get\_vocabulary() on the layer.
+
+```
+    print("1287 ---> ",vectorize_layer.get_vocabulary()[1287])
+    print(" 313 ---> ",vectorize_layer.get_vocabulary()[313])
+    print('Vocabulary size: 
+    {}'.format(len(vectorize_layer.get_vocabulary())))
+```
+
+16. You are nearly ready to train your model. As a final preprocessing step, apply the TextVectorization layer we created earlier to the train, validation, and test dataset.
+
+```
+    train_ds = raw_train_ds.map(vectorize_text)
+    val_ds = raw_val_ds.map(vectorize_text)
+    test_ds = raw_test_ds.map(vectorize_text)
+```
+
+17. The cache() function keeps data in memory after it is loaded off disk. This ensures the dataset does not become a bottleneck while training your model. If your dataset is too large to fit into memory, you can also use this method to create a performant on-disk cache, which is more efficient to read than many small files.
+
+18. The prefetch() function overlaps data preprocessing and model execution while training.
+
+```
+    AUTOTUNE = tf.data.AUTOTUNE
+
+    train_ds = train_ds.cache().prefetch(buffer_size=AUTOTUNE)
+    val_ds = val_ds.cache().prefetch(buffer_size=AUTOTUNE)
+    test_ds = test_ds.cache().prefetch(buffer_size=AUTOTUNE)
+```
+19. It is time to create your neural network.
+
+```
+    embedding_dim = 16
+    model = tf.keras.Sequential([layers.Embedding(max_features + 1, 
+    embedding_dim),layers.Dropout(0.2),layers.GlobalAveragePooling1D(),
+    layers.Dropout(0.2),layers.Dense(1)])
+    model.summary()
+```
+<table width="100%" align="center">
+ <tr width="100%" align="center">
+    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/Text%20Classification%204.png">
+ </tr>
+</table>
+
+20. A model needs a loss function and an optimizer for training. Since this is a binary classification problem and the model outputs a probability (a single-unit layer with a sigmoid activation), use losses.BinaryCrossentropy loss function.
+
+```
+    model.compile(loss=losses.BinaryCrossentropy(from_logits=True),
+    optimizer='adam',metrics=tf.metrics.BinaryAccuracy(threshold=0.0))
+```
+
+21. Train the model by passing the dataset object to the fit method.
+
+```
+    epochs = 10
+    history = model.fit(train_ds,validation_data=val_ds,epochs=epochs)
+```
+<table width="100%" align="center">
+ <tr width="100%" align="center">
+    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/Text%20Classification%205.png">
+ </tr>
+</table>
+
+22. You see how the model performs. Two values are returned: loss (a number that represents our error, lower values are better) and accuracy.
+
+```
+    loss, accuracy = model.evaluate(test_ds)
+
+    print("Loss: ", loss)
+    print("Accuracy: ", accuracy)
+```
+
+23. model.fit() returns a History object that contains a dictionary with everything that happened during training.
+
+```
+    history_dict = history.history
+    history_dict.keys()
+```
+
+24. There are four entries, one for each monitored metric during training and validation. You can use these to plot the training and validation loss for comparison, as well as the training and validation accuracy:
+
+```
+    acc = history_dict['binary_accuracy']
+    val_acc = history_dict['val_binary_accuracy']
+    loss = history_dict['loss']
+    val_loss = history_dict['val_loss']
+
+    epochs = range(1, len(acc) + 1)
+
+    # "bo" is for "blue dot"
+    plt.plot(epochs, loss, 'bo', label='Training loss')
+    # b is for "solid blue line"
+    plt.plot(epochs, val_loss, 'b', label='Validation loss')
+    plt.title('Training and validation loss')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.legend()
+
+    plt.show()
+```
+<table width="100%" align="center">
+ <tr width="100%" align="center">
+    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/Text%20Classification%206.png">
+ </tr>
+</table>
 
 1. Export the model.
 
