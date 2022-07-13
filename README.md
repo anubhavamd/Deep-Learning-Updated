@@ -716,364 +716,336 @@ Follow these steps:
 4. Set the model in evaluation mode. Evaluation mode directs PyTorch to not store intermediate data, which would have been used in training.
 
 ```
-model = torch.hub.load(&#39;pytorch/vision:v0.10.0&#39;, &#39;inception\_v3&#39;, pretrained **=** True)
+    model = torch.hub.load('pytorch/vision:v0.10.0', 'inception_v3', 
+    pretrained=True)
+    model.eval()
+```
 
-model.eval()
+5. Download a sample image to inference.
 
-1. Download a sample image to inference.
+```
+    import urllib
+    url, filename = 
+    ("https://github.com/pytorch/hub/raw/master/images/dog.jpg", 
+    "dog.jpg")
+    try: urllib.URLopener().retrieve(url, filename)
+    except: urllib.request.urlretrieve(url, filename)
+```
 
-import urllib
+6. Import torchvision and PIL Image support libraries.
 
-url, filename = (&quot;https://github.com/pytorch/hub/raw/master/images/dog.jpg&quot;, &quot;dog.jpg&quot;)
+```
+     from PIL import Image
+     from torchvision import transforms
+     input_image = Image.open(filename)
+```
 
-try: urllib.URLopener().retrieve(url, filename)
+7. Apply preprocessing and normalization.
 
-except: urllib.request.urlretrieve(url, filename)
+```
+     preprocess = transforms.Compose
+     ([transforms.Resize(299),g
+     transforms.CenterCrop(299),
+     transforms.ToTensor(),
+     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),])
+```
 
-1. Import torchvision and PIL Image support libraries.
+8. Use input tensors and unsqueeze it later.
 
-from PIL import Image
+```
+     input\_tensor = preprocess(input\_image)
+     input\_batch = input\_tensor.unsqueeze(0)
+     if torch.cuda.is\_available():
+     input\_batch = input\_batch.to('cuda')
+     model.to('cuda')
+```
 
-from torchvision import transforms
+9. Find out probabilities.
 
-input\_image = Image.open(filename)
+```
+     with torch.no_grad():
+     output = model(input_batch)
+     print(output[0])
+     probabilities = torch.nn.functional.softmax(output[0], dim=0)
+     print(probabilities)
+```
 
-1. Apply preprocessing and normalization.
+10. To understand the probabilities, download gand examine the Imagenet labels.
 
-preprocess = transforms.Compose([
+```
+    wget 
+    [https://raw.githubusercontent.com/pytorch/hub/master/imagenet\_classes.txt](https://raw.githubusercontent.com/pytorch/hub/master/imagenet_classes.txt)
+```
 
-transforms.Resize(299),g
+11. Read the categories and show the top categories for the image.
 
-transforms.CenterCrop(299),
-
-transforms.ToTensor(),
-
-transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-
-])
-
-1. Use input tensors and unsqueeze it later.
-
-input\_tensor = preprocess(input\_image)
-
-input\_batch = input\_tensor.unsqueeze(0)
-
-if torch.cuda.is\_available():
-
-input\_batch = input\_batch.to(&#39;cuda&#39;)
-
-model.to(&#39;cuda&#39;)
-
-1. Find out probabilities.
-
-with torch.no\_grad():
-
-output = model(input\_batch)
-
-print(output[0])
-
-probabilities = torch.nn.functional.softmax(output[0], dim=0)
-
-print(probabilities)
-
-1. To understand the probabilities, download gand examine the Imagenet labels.
-
-wget _[https://raw.githubusercontent.com/pytorch/hub/master/imagenet\_classes.txt](https://raw.githubusercontent.com/pytorch/hub/master/imagenet_classes.txt)_
-
-1. Read the categories and show the top categories for the image.
-
-with open(&quot;imagenet\_classes.txt&quot;, &quot;r&quot;) as f:
-
-categories = [s.strip() for s in f.readlines()]
-
-top5\_prob, top5\_catid = torch.topk(probabilities, 5)
-
-for i in range(top5\_prob.size(0)):
-
-print(categories[top5\_catid[i]], top5\_prob[i].item())
+```
+     with open("imagenet_classes.txt", "r") as f:
+     categories = [s.strip() for s in f.readlines()]
+     top5_prob, top5_catid = torch.topk(probabilities, 5)
+     for i in range(top5_prob.size(0)):
+     print(categories[top5_catid[i]], top5_prob[i].item())
+```
 
 ##### 4.1.1.1.2 Training inception v3
 
 The previous section focused on downloading and using the Inception-v3 model for a simple image classification task. This section will walk through training the model on a new dataset.
 
-The code is available on: _[https://github.com/ROCmSoftwarePlatform/DeepLearningGuide](https://github.com/ROCmSoftwarePlatform/DeepLearningGuide)_
+The code is available on: [https://github.com/ROCmSoftwarePlatform/DeepLearningGuide](https://github.com/ROCmSoftwarePlatform/DeepLearningGuide)
 
 Follow these steps:
 
-1. Run the Pytorch ROCm Docker image, or refer to section 3.1.1_[Installing PyTorch](#_Installing_PyTorch)_ for setting up a PyTorch environment on ROCm.
-
-docker pull rocm/pytorch:latest
-
-docker run -it --cap-add=SYS\_PTRACE --security-opt seccomp=unconfined --device=/dev/kfd --device=/dev/dri --group-add video --ipc=host --shm-size 8G rocm/pytorch:latest
-
-1. Download an imagenet database. For this example, use the tiny-imagenet-200 [4], a smaller ImageNet variant, with 200 image classes, and training dataset with 100000 images, downsized to 64x64 color images.
-
-wget _[http://cs231n.stanford.edu/tiny-imagenet-200.zip](http://cs231n.stanford.edu/tiny-imagenet-200.zip)_
-
-1. Process the database to set the validation directory to the format expected by PyTorch DataLoader. Run the following script:
-
-import io
-
-import glob
-
-import os
-
-from shutil import move
-
-from os.path import join
-
-from os import listdir, rmdir
-
-target\_folder = &#39;./tiny-imagenet-200/val/&#39;
-
-val\_dict = {}
-
-with open(&#39;./tiny-imagenet-200/val/val\_annotations.txt&#39;, &#39;r&#39;) as f:
-
-for line in f.readlines():
-
-split\_line = line.split(&#39;\t&#39;)
-
-val\_dict[split\_line[0]] = split\_line[1]
-
-paths = glob.glob(&#39;./tiny-imagenet-200/val/images/\*&#39;)
-
-for path in paths:
-
-file = path.split(&#39;/&#39;)[-1]
-
-folder = val\_dict[file]
-
-if not os.path.exists(target\_folder + str(folder)):
-
-os.mkdir(target\_folder + str(folder))
-
-os.mkdir(target\_folder + str(folder) + &#39;/images&#39;)
-
-for path in paths:
-
-file = path.split(&#39;/&#39;)[-1]
-
-folder = val\_dict[file]
-
-dest = target\_folder + str(folder) + &#39;/images/&#39; + str(file)
-
-move(path, dest)
-
-rmdir(&#39;./tiny-imagenet-200/val/images&#39;)
-
-1. Open a PyThon shell.
-
-1. Import dependencies including torch, OS, and torchvision.
-
-import torch
-
-import os
-
-import torchvision
-
-from torchvision import transforms
-
-from torchvision.transforms.functional import InterpolationMode
-
-1. Set parameters to guide the training process.
- The device is set to &quot;cuda.&quot; In PyTorch, &quot;cuda&quot; is a generic keyword to denote a gpu.
-
-device = &quot;cuda&quot;
-
-1. Set the data\_path to the location of the training and validation data. In this case, the tiny-imagenet-200 is present as a subdirectory to the current directory.
-
-data\_path = &quot;tiny-imagenet-200&quot;
-
-1. The training image size is cropped for input into inception-v3.
-
-train\_crop\_size = 299
-
-1. To make the image smooth, use bilinear interpolation, which is a resampling method that uses the distance weighted average of the four nearest pixel values to estimate a new pixel value.
-
-interpolation = &quot;bilinear&quot;
-
-1. The next parameters control the size to which the validation image is cropped and resized.
-
-val\_crop\_size = 299
-
-val\_resize\_size = 342
-
-1. The pretrained inception-v3 model is chosen to be downloaded from torchvision.
-
-model\_name = &quot;inception\_v3&quot;
-
-pretrained = True
-
-1. During each training step, a batch of images is processed to compute the loss gradient and perform the optimization. In the following setting, the size of the batch is determined.
-
-batch\_size = 32
-
-1. This refers to the number of CPU threads used by the data loader to perform efficient multiprocess data loading.
-
-num\_workers = 16
-
-1. The pytorch optim package provides methods to adjust the learning rate as the training progresses. This example uses StepLR scheduler, that decays the learning rate by lr\_gamma, at every lr\_step\_size number of epochs.
-
-learning\_rate = 0.1
-
-momentum = 0.9
-
-weight\_decay = 1e-4
-
-lr\_step\_size = 30
-
-lr\_gamma = 0.1
-
-1. One training epoch is when an entire dataset is passed forward and backward through the neural network.
-
-epochs = 90
-
-1. The train and validation directories are determined.
-
-train\_dir = os.path.join(data\_path, &quot;train&quot;)
-
-val\_dir = os.path.join(data\_path, &quot;val&quot;)
-
-1. Set up the training and testing data loaders.
-
-interpolation = InterpolationMode(interpolation)
-
-TRAIN\_TRANSFORM\_IMG = transforms.Compose([
-
-Normalizaing and standardardizing the image
-
-transforms.RandomResizedCrop(train\_crop\_size, interpolation=interpolation),
-
-transforms.PILToTensor(),
-
-transforms.ConvertImageDtype(torch.float),
-
-transforms.Normalize(mean=[0.485, 0.456, 0.406],
-
-std=[0.229, 0.224, 0.225] )
-
-])
-
-dataset = torchvision.datasets.ImageFolder(
-
-train\_dir,
-
-transform=TRAIN\_TRANSFORM\_IMG
-
-)
-
-TEST\_TRANSFORM\_IMG = transforms.Compose([
-
-transforms.Resize(val\_resize\_size, interpolation=interpolation),
-
-transforms.CenterCrop(val\_crop\_size),
-
-transforms.PILToTensor(),
-
-transforms.ConvertImageDtype(torch.float),
-
-transforms.Normalize(mean=[0.485, 0.456, 0.406],
-
-std=[0.229, 0.224, 0.225] )
-
-])
-
-dataset\_test = torchvision.datasets.ImageFolder(
-
-val\_dir,
-
-transform=TEST\_TRANSFORM\_IMG
-
-)
-
-print(&quot;Creating data loaders&quot;)
-
-train\_sampler = torch.utils.data.RandomSampler(dataset)
-
-test\_sampler = torch.utils.data.SequentialSampler(dataset\_test)
-
-data\_loader = torch.utils.data.DataLoader(
-
-dataset,
-
-batch\_size=batch\_size,
-
-sampler=train\_sampler,
-
-num\_workers=num\_workers,
-
-pin\_memory=True
-
-)
-
-data\_loader\_test = torch.utils.data.DataLoader(
-
-dataset\_test, batch\_size=batch\_size, sampler=test\_sampler, num\_workers=num\_workers, pin\_memory=True
-
-)
-
-**Note** Use torchvision to obtain the Inception-v3 model. To speed up training, the pre- trained model weights are used.
-
-print(&quot;Creating model&quot;)
-
-print(&quot;Num classes = &quot;, len(dataset.classes))
-
-model = torchvision.models.\_\_dict\_\_[model\_name](pretrained=pretrained)
-
-1. Adapt inception\_v3 for the current dataset. Tiny-imagenet-200 contains only 200 classes, whereas Inception-v3 is designed for 1000 class output. The last layer of Inception\_v3 is replaced to match the output features required.
-
-model.fc = torch.nn.Linear(model.fc.in\_features, len(dataset.classes))
-
-model.aux\_logits = False
-
-model.AuxLogits = None
-
-1. Move the model to GPU device.
-
-model.to(device)
-
-1. Set the loss criteria. For this example, Cross Entropy Loss [5] is used.
-
-criterion = torch.nn.CrossEntropyLoss()
-
-1. Set the optimizer to Stochastic Gradient Descent.
-
-optimizer = torch.optim.SGD(
-
-model.parameters(),
-
-lr=learning\_rate,
-
-momentum=momentum,
-
-weight\_decay=weight\_decay
-
-)
-
-1. Set the learning rate scheduler.
-
-lr\_scheduler = torch.optim.lr\_scheduler.StepLR(optimizer, step\_size=lr\_step\_size, gamma=lr\_gamma)
-
-1. Iterate over epochs. Each epoch is a complete pass through the training data.
-
-print(&quot;Start training&quot;)
-
-for epoch in range(epochs):
-
-model.train()
-
-epoch\_loss = 0
-
-len\_dataset = 0
-
-1. Iterate over steps. The data is processed in batches, and each step passes through a full batch.
-
-for step, (image, target) in enumerate(data\_loader):
-
-1. Pass the image and target to GPU device.
-
-image, target = image.to(device), target.to(device)
+1. Run the Pytorch ROCm Docker image, or refer to section 3.1.1 [Installing PyTorch](#_Installing_PyTorch) for setting up a PyTorch environment on ROCm.
+
+```
+   docker pull rocm/pytorch:latest
+   docker run -it --cap-add=SYS_PTRACE --security-opt 
+   seccomp=unconfined --device=/dev/kfd --device=/dev/dri --group-add 
+   video --ipc=host --shm-size 8G rocm/pytorch:latest
+```
+
+2. Download an imagenet database. For this example, use the tiny-imagenet-200 [4], a smaller ImageNet variant, with 200 image classes, and training dataset with 100000 images, downsized to 64x64 color images.
+
+```
+   wget 
+   [http://cs231n.stanford.edu/tiny-imagenet-200.zip](http://cs231n.stanford.edu/tiny-imagenet-200.zip)
+```
+
+3. Process the database to set the validation directory to the format expected by PyTorch DataLoader. Run the following script:
+
+```
+   import io
+   import glob
+   import os
+   from shutil import move
+   from os.path import join
+   from os import listdir, rmdir
+   target_folder = './tiny-imagenet-200/val/'
+   val_dict = {}
+   with open('./tiny-imagenet-200/val/val_annotations.txt', 'r') as f:
+       for line in f.readlines():
+           split_line = line.split('\t')
+           val_dict[split_line[0]] = split_line[1]
+```
+
+```
+    paths = glob.glob('./tiny-imagenet-200/val/images/*')
+    for path in paths:
+        file = path.split('/')[-1]
+        folder = val_dict[file]
+        if not os.path.exists(target_folder + str(folder)):
+            os.mkdir(target_folder + str(folder))
+            os.mkdir(target_folder + str(folder) + '/images')
+
+    for path in paths:
+        file = path.split('/')[-1]
+        folder = val_dict[file]
+        dest = target_folder + str(folder) + '/images/' + str(file)
+        move(path, dest)
+```
+
+```
+    rmdir('./tiny-imagenet-200/val/images')
+```
+
+4. Open a PyThon shell.
+
+5. Import dependencies including torch, OS, and torchvision.
+
+```
+    import torch
+    import os
+    import torchvision 
+    from torchvision import transforms
+    from torchvision.transforms.functional import InterpolationMode
+```
+
+6. Set parameters to guide the training process.
+   The device is set to &quot;cuda.&quot; In PyTorch, &quot;cuda&quot; is a generic keyword to denote a gpu.
+
+```
+    device = "cuda"
+```
+
+7. Set the data\_path to the location of the training and validation data. In this case, the tiny-imagenet-200 is present as a subdirectory to the current directory.
+
+```
+    data_path = "tiny-imagenet-200"
+```
+
+8. The training image size is cropped for input into inception-v3.
+
+```
+    train_crop_size = 299
+```
+
+9. To make the image smooth, use bilinear interpolation, which is a resampling method that uses the distance weighted average of the four nearest pixel values to estimate a new pixel value.
+
+```
+    interpolation = "bilinear" 
+```
+
+10. The next parameters control the size to which the validation image is cropped and resized.
+
+```
+    val_crop_size = 299
+    val_resize_size = 342
+```
+
+11. The pretrained inception-v3 model is chosen to be downloaded from torchvision.
+
+```
+    model_name = "inception_v3" 
+    pretrained = True
+```
+
+12. During each training step, a batch of images is processed to compute the loss gradient and perform the optimization. In the following setting, the size of the batch is determined.
+
+```
+    batch\_size = 32
+```
+ 
+13. This refers to the number of CPU threads used by the data loader to perform efficient multiprocess data loading.
+
+```
+    num\_workers = 16
+```
+
+14. The pytorch optim package provides methods to adjust the learning rate as the training progresses. This example uses StepLR scheduler, that decays the learning rate by lr_gamma, at every lr_step_size number of epochs.
+
+```
+    learning_rate = 0.1
+    momentum = 0.9
+    weight_decay = 1e-4
+    lr_step_size = 30
+    lr_gamma = 0.1
+```
+
+15. One training epoch is when an entire dataset is passed forward and backward through the neural network.
+
+```
+   epochs = 90
+```
+
+16. The train and validation directories are determined.
+
+```
+   train_dir = os.path.join(data_path, "train")
+   val_dir = os.path.join(data_path, "val")
+```
+ 
+17. Set up the training and testing data loaders.
+
+```
+   interpolation = InterpolationMode(interpolation)
+
+   TRAIN_TRANSFORM_IMG = transforms.Compose([
+   Normalizaing and standardardizing the image    
+   transforms.RandomResizedCrop(train_crop_size, interpolation=interpolation),
+       transforms.PILToTensor(),
+       transforms.ConvertImageDtype(torch.float),
+       transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                            std=[0.229, 0.224, 0.225] )
+       ])
+   dataset = torchvision.datasets.ImageFolder(
+       train_dir,
+       transform=TRAIN_TRANSFORM_IMG
+   )
+   TEST_TRANSFORM_IMG = transforms.Compose([
+       transforms.Resize(val_resize_size, interpolation=interpolation),
+       transforms.CenterCrop(val_crop_size),
+       transforms.PILToTensor(),
+       transforms.ConvertImageDtype(torch.float),
+       transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                            std=[0.229, 0.224, 0.225] )
+       ])
+
+   dataset_test = torchvision.datasets.ImageFolder( 
+       val_dir, 
+       transform=TEST_TRANSFORM_IMG
+   )
+
+   print("Creating data loaders")
+   train_sampler = torch.utils.data.RandomSampler(dataset)
+   test_sampler = torch.utils.data.SequentialSampler(dataset_test)
+
+   data_loader = torch.utils.data.DataLoader(
+       dataset,
+       batch_size=batch_size,
+       sampler=train_sampler,
+       num_workers=num_workers,
+       pin_memory=True
+   )
+
+   data_loader_test = torch.utils.data.DataLoader(
+       dataset_test, batch_size=batch_size, sampler=test_sampler, num_workers=num_workers, pin_memory=True
+   )
+```
+
+   **Note** Use torchvision to obtain the Inception-v3 model. To speed up training, the pre- trained model weights are used.
+
+```
+   print("Creating model")
+   print("Num classes = ", len(dataset.classes))
+   model = torchvision.models.__dict__[model_name](pretrained=pretrained)
+```
+
+18. Adapt inception_v3 for the current dataset. Tiny-imagenet-200 contains only 200 classes, whereas Inception-v3 is designed for 1000 class output. The last layer of Inception_v3 is replaced to match the output features required. 
+
+```
+   model.fc = torch.nn.Linear(model.fc.in_features, len(dataset.classes))
+   model.aux_logits = False
+   model.AuxLogits = None
+```
+19. Move the model to GPU device.
+
+```
+   model.to(device)
+```
+
+20. Set the loss criteria. For this example, Cross Entropy Loss [5] is used.
+
+```
+   criterion = torch.nn.CrossEntropyLoss()
+```
+
+21. Set the optimizer to Stochastic Gradient Descent.
+
+```
+   optimizer = torch.optim.SGD(
+       model.parameters(),
+       lr=learning_rate,
+       momentum=momentum,
+       weight_decay=weight_decay
+   )
+```
+22. Set the learning rate scheduler.
+
+```
+   lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=lr_step_size, gamma=lr_gamma)
+```
+
+23. Iterate over epochs. Each epoch is a complete pass through the training data.
+
+```
+    print("Start training")
+    for epoch in range(epochs):
+        model.train()
+        epoch_loss = 0
+        len_dataset = 0
+```
+
+24. Iterate over steps. The data is processed in batches, and each step passes through a full batch.
+
+```
+    for step, (image, target) in enumerate(data_loader):
+```
+
+25. Pass the image and target to GPU device.
+
+```
+    image, target = image.to(device), target.to(device)
+```
 
 The following is the core training logic:
 
@@ -1082,35 +1054,33 @@ The following is the core training logic:
 3. This loss is back propagated to all parameters that require to be optimized.
 4. The optimizer updates the parameters based on the selected optimization algorithm.
 
-output = model(image)
+```
+    output = model(image)
+    loss = criterion(output, target)
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
 
-loss = criterion(output, target)
+```
 
-optimizer.zero\_grad()
+26. The epoch loss is updated, and step loss is printed.
 
-loss.backward()
+```
+     epoch_loss += output.shape[0] * loss.item()
+     len_dataset += output.shape[0];
+     if step % 10 == 0:
+     print('Epoch: ', epoch, '| step : %d' % step, '| train loss : %0.4f' % loss.item() )
+     epoch_loss = epoch_loss / len_dataset
+     print('Epoch: ', epoch, '| train loss :  %0.4f' % epoch_loss )
+```
 
-optimizer.step()
+27. The learning rate is updated at the end of each epoch.
 
-1. The epoch loss is updated, and step loss is printed.
+```
+    lr_scheduler.step()
+```
 
-epoch\_loss += output.shape[0] \* loss.item()
-
-len\_dataset += output.shape[0];
-
-if step % 10 == 0:
-
-print(&#39;Epoch: &#39;, epoch, &#39;| step : %d&#39; % step, &#39;| train loss : %0.4f&#39; % loss.item() )
-
-epoch\_loss = epoch\_loss / len\_dataset
-
-print(&#39;Epoch: &#39;, epoch, &#39;| train loss : %0.4f&#39; % epoch\_loss )
-
-1. The learning rate is updated at the end of each epoch.
-
-lr\_scheduler.step()
-
-1. Now that training is done for the epoch, the model is evaluated against the validation dataset.
+28. Now that training is done for the epoch, the model is evaluated against the validation dataset.
 
 model.eval()
 
