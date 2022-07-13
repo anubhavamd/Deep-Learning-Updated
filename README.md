@@ -207,6 +207,26 @@ $ /opt/rocm-\&lt;version\&gt;/bin/rocminfo
 
 ## 3.1 PyTorch
 
+```mermaid
+flowchart LR
+    PyTorch-->Install-PyTorch
+    PyTorch-->Test-PyTorch
+    PyTorch-->Run-PyTorch
+    Install-PyTorch-->Use-Docker-Image 
+    Install-PyTorch-->Use-wheels-package
+    Install-PyTorch-->Use-PyTorch-Rocm-base-Docker-Image
+    Install-PyTorch-->Use-PyTorch-upstream-Docker-file
+    
+    click PyTorch href "https://github.com/anubhavamd/Deep-Learning-Updated#31-pytorch"
+    click Install-PyTorch href "https://github.com/anubhavamd/Deep-Learning-Updated#311-installing-pytorch"
+    click Test-PyTorch href "https://github.com/anubhavamd/Deep-Learning-Updated#312-test-the-pytorch-installation"
+    click Run-PyTorch href "https://github.com/anubhavamd/Deep-Learning-Updated#313-run-a-basic-pytorch-example"
+    click Use-Docker-Image href "https://github.com/anubhavamd/Deep-Learning-Updated#3111-option-1-recommended-use-docker-image-with-pytorch-pre-installed"
+    click Use-wheels-package href "https://github.com/anubhavamd/Deep-Learning-Updated#3112-option-2-install-pytorch-using-wheels-package"
+    click Use-PyTorch-Rocm-base-Docker-Image href "https://github.com/anubhavamd/Deep-Learning-Updated#3113-option-3-install-pytorch-using-pytorch-rocm-base-docker-image"
+    click Use-PyTorch-upstream-Docker-file href "https://github.com/anubhavamd/Deep-Learning-Updated#3114-option-4-install-using-pytorch-upstream-docker-file"
+```
+
 <table width="100%" align="center">
  <tr width="100%" align="center">
     <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/PyTorch.png">
@@ -501,6 +521,25 @@ Follow these steps:
 
 ## 3.2 TensorFlow
 
+```mermaid
+flowchart LR
+    TensorFlow-->Install-TensorFlow
+    TensorFlow-->Test-TensorFlow
+    TensorFlow-->Run-TensorFlow
+    Install-TensorFlow-->Use-Docker 
+    Install-TensorFlow-->Use-wheels-package
+    Test-TensorFlow-->Test
+    Run-TensorFlow-->Run
+    click TensorFlow href "https://github.com/anubhavamd/Deep-Learning-Updated#32-tensorflow"
+    click  Install-TensorFlow href "https://github.com/anubhavamd/Deep-Learning-Updated#321-installing-tensorflow"
+    click Test-TensorFlow href "https://github.com/anubhavamd/Deep-Learning-Updated#322-test-the-tensorflow-installation"
+    click Run-TensorFlow href "https://github.com/anubhavamd/Deep-Learning-Updated#323-run-a-basic-tensorflow-example"
+    click Use-Docker href "https://github.com/anubhavamd/Deep-Learning-Updated#3211-option-1-install-tensorflow-using-docker-image"
+    click Use-wheels-package href "https://github.com/anubhavamd/Deep-Learning-Updated#3212-option-2-install-tensorflow-using-wheels-package"
+    click Test href "https://github.com/anubhavamd/Deep-Learning-Updated#322-test-the-tensorflow-installation"
+    click Run href "https://github.com/anubhavamd/Deep-Learning-Updated#323-run-a-basic-tensorflow-example"
+```
+
 <table width="100%" align="center">
  <tr width="100%" align="center">
     <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/2%20Tensorflow.png">
@@ -508,26 +547,6 @@ Follow these steps:
 </table>
 
 TensorFlow is an open-source library for solving problems of Machine Learning, Deep Learning, and Artificial Intelligence. It can be used to solve a large number of problems across different sectors and industries but primarily focuses on training and inference in neural networks. It is one of the most popular and in-demand frameworks, and very active in terms of open-source contribution and development.
-
-```mermaid
-flowchart LR
-    PyTorch-->Install-PyTorch
-    PyTorch-->Test-PyTorch
-    PyTorch-->Run-PyTorch
-    Install-PyTorch-->Use-Docker-Image 
-    Install-PyTorch-->Use-wheels-package
-    Install-PyTorch-->Use-PyTorch-Rocm-base-Docker-Image
-    Install-PyTorch-->Use-PyTorch-upstream-Docker-file
-    
-    click PyTorch href "https://github.com/anubhavamd/Deep-Learning-Updated#31-pytorch"
-    click Install-PyTorch href "https://github.com/anubhavamd/Deep-Learning-Updated#311-installing-pytorch"
-    click Test-PyTorch href "https://github.com/anubhavamd/Deep-Learning-Updated#312-test-the-pytorch-installation"
-    click Run-PyTorch href "https://github.com/anubhavamd/Deep-Learning-Updated#313-run-a-basic-pytorch-example"
-    click Use-Docker-Image href "https://github.com/anubhavamd/Deep-Learning-Updated#3111-option-1-recommended-use-docker-image-with-pytorch-pre-installed"
-    click Use-wheels-package href "https://github.com/anubhavamd/Deep-Learning-Updated#3112-option-2-install-pytorch-using-wheels-package"
-    click Use-PyTorch-Rocm-base-Docker-Image href "https://github.com/anubhavamd/Deep-Learning-Updated#3113-option-3-install-pytorch-using-pytorch-rocm-base-docker-image"
-    click Use-PyTorch-upstream-Docker-file href "https://github.com/anubhavamd/Deep-Learning-Updated#3114-option-4-install-using-pytorch-upstream-docker-file"
-```
 
 ### 3.2.1 Installing TensorFlow
 
