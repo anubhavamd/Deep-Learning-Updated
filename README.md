@@ -1952,8 +1952,7 @@ flowchart LR
     MIGraphX-Example--> MIGraphX-Python-API
     MIGraphX-Example--> MIGraphX-C++-API
     MIGraphX-Introduction--> Tuning-GraphX
-    Tuning-GraphX --> Tuned
-    Tuning-GraphX --> Untunned
+    
     
     
     click Inferencing href "https://github.com/anubhavamd/Deep-Learning-Updated#51-inferencing"
@@ -1966,8 +1965,7 @@ flowchart LR
     click MIGraphX-Python-API href "https://github.com/anubhavamd/Deep-Learning-Updated#5131-migraphx-python-api"
     click MIGraphX-C++-API href "https://github.com/anubhavamd/Deep-Learning-Updated#5132-migraphx-c-api"
     click Tuning-GraphX href "https://github.com/anubhavamd/Deep-Learning-Updated#514-tuning-migraphx"
-    click Tuned href "https://github.com/anubhavamd/Deep-Learning-Updated#tuned"
-    click Untunned href "https://github.com/anubhavamd/Deep-Learning-Updated#untuned"
+    
 ```
 
 ## 5.1 Inferencing
