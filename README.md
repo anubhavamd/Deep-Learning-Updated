@@ -17,9 +17,15 @@
  
  © 2021-22 Advanced Micro Devices, Inc. All Rights Reserved.
 
-[This page left blank intentionally]
 
 # Table of Contents
+
+<table1>
+<tr>
+<td>
+<pre>
+<a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#chapter-1-introduction-to-machine-learning-and-deep-learning">Chapter 1 Introduction to Machine Learning and Deep Learning </a> 
+
 
 **[Chapter 1](#_Toc105523387)****Introduction to Machine Learning and Deep Learning 4**
 
