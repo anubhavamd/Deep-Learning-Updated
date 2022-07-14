@@ -77,66 +77,6 @@
 </pre>
 </table1>
 
-**[Chapter 1](#_Toc105523387)****Introduction to Machine Learning and Deep Learning 4**
-
-[1.1Machine Learning 4](#_Toc105523388)
-
-[1.2Deep Learning 4](#_Toc105523389)
-
-[1.3AMD Contribution to Machine Learning &amp; Deep Learning 5](#_Toc105523390)
-
-**[Chapter 2](#_Toc105523391)****Prerequisites 6**
-
-[2.1Hardware prerequisites 6](#_Toc105523392)
-
-[2.2ROCm Installation guide 6](#_Toc105523393)
-
-[2.2.1ROCm User-space and Kernel Driver Compatibility 6](#_Toc105523394)
-
-[2.2.2ROCm Framework Compatibility 7](#_Toc105523395)
-
-[2.2.3Installation 7](#_Toc105523396)
-
-[2.2.4Verifying ROCm installation 7](#_Toc105523397)
-
-**[Chapter 3](#_Toc105523398)****Frameworks Installation Guide 8**
-
-[3.1PyTorch 8](#_Toc105523399)
-
-[3.1.1Installing PyTorch 8](#_Toc105523400)
-
-[3.1.2Test the PyTorch Installation 12](#_Toc105523401)
-
-[3.1.3Run a basic PyTorch example 13](#_Toc105523402)
-
-[3.2TensorFlow 14](#_Toc105523403)
-
-[3.2.1Installing TensorFlow 14](#_Toc105523404)
-
-[3.2.2Test the TensorFlow Installation 17](#_Toc105523405)
-
-[3.2.3Run a basic TensorFlow example 17](#_Toc105523406)
-
-**[Chapter 4](#_Toc105523407)****Deep Learning Training 18**
-
-[4.1.1Case studies 20](#_Toc105523408)
-
-**[Chapter 5](#_Toc105523409)****Optimization 52**
-
-[5.1Inferencing 52](#_Toc105523410)
-
-[5.1.1MIGraphX Introduction 52](#_Toc105523411)
-
-[5.1.2MIGraphX Installation 53](#_Toc105523412)
-
-[5.1.3MIGraphX Example 54](#_Toc105523413)
-
-[5.1.4Tuning MIGraphX 56](#_Toc105523414)
-
-**[Chapter 6](#_Toc105523415)****Troubleshooting 59**
-
-**[Chapter 7](#_Toc105523416)****References 61**
-
 # Chapter 1 Introduction to Machine Learning and Deep Learning
 
 ## 1.1 Machine Learning
