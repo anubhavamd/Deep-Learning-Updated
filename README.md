@@ -24,8 +24,58 @@
 <tr>
 <td>
 <pre>
-<a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#chapter-1-introduction-to-machine-learning-and-deep-learning">Chapter 1 Introduction to Machine Learning and Deep Learning </a> 
-
+<a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#chapter-1-introduction-to-machine-learning-and-deep-learning">Chapter 1 Introduction to Machine Learning and Deep Learning </a>
+         <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#11-machine-learning">1.1 Machine Learning </a>
+         <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#12-deep-learning">1.2 Deep Learning </a>
+         <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#13-amd-contribution-to-machine-learning-and-deep-learning">1.3 AMD Contribution to Machine Learning and Deep Learning </a>
+<a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#chapter-2-prerequisites">Chapter 2 Prerequisites </a>
+         <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#21-hardware-prerequisites">2.1 Hardware Prerequisites </a>
+         <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#22-rocm-installation-guide">2.2 ROCm Installation Guide </a>
+                  <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#221-rocm-user-space-and-kernel-driver-compatibility">2.2.1 ROCm User-space and Kernel Driver Compatibility </a>
+                  <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#222-rocm-framework-compatibility">2.2.2 ROCm Framework Compatibility </a>
+                  <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#223-installation">2.2.3 Installation </a>
+                  <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#224-verifying-rocm-installation">2.2.4 Verifying ROCm Installation </a>
+<a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#chapter-3-frameworks-installation-guide">Chapter 3 Frameworks Installation Guide </a>
+         <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#31-pytorch">3.1 PyTorch </a>
+                  <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#311-installing-pytorch">3.1.1 Installing PyTorch </a>
+                           <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#3111-option-1-recommended-use-docker-image-with-pytorch-pre-installed">3.1.1.1 Option 1 (Recommended): Use Docker Image with PyTorch Pre-installed </a>
+                           <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#3112-option-2-install-pytorch-using-wheels-package">3.1.1.2 Option 2: Install PyTorch Using Wheels Package </a>
+                           <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#3113-option-3-install-pytorch-using-pytorch-rocm-base-docker-image">3.1.1.3 Option 3: Install PyTorch Using PyTorch ROCm Base Docker Image </a>
+                           <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#3114-option-4-install-using-pytorch-upstream-docker-file">3.1.1.4 Option 4: Install Using PyTorch Upstream Docker File </a>
+                  <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#312-test-the-pytorch-installation">3.1.2 Test the PyTorch Installation </a>
+                  <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#313-run-a-basic-pytorch-example">3.1.3 Run a Basic PyTorch Example </a>
+          <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#32-tensorflow">3.2 TensorFlow </a>
+                   <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#321-installing-tensorflow">3.2.1 Installing TensorFlow </a>
+                            <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#3211-option-1-install-tensorflow-using-docker-image">3.2.1.1 Option 1: Install TensorFlow using Docker image </a>
+                            <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#3212-option-2-install-tensorflow-using-wheels-package">3.2.1.2 Option 2: Install TensorFlow Using Wheels Package </a>
+                   <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#322-test-the-tensorflow-installation">3.2.2 Test the TensorFlow Installation </a>
+                   <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#323-run-a-basic-tensorflow-example">3.2.3 Run a Basic TensorFlow Example </a>
+<a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#chapter-4-deep-learning-training">Chapter 4 Deep Learning Training </a>
+         <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#411-case-studies">4.1.1 Case Studies </a>
+                  <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#4111-inception-v3-with-pytorch">4.1.1.1 Inception v3 with PyTorch </a>
+                           <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#41111-evaluating-a-pre-trained-model">4.1.1.1.1 Evaluating a Pre-trained Model </a>
+                           <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#41112-training-inception-v3">4.1.1.1.2 Training inception v3 </a>
+                   <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#4112-custom-model-with-cifar-10-on-pytorch">4.1.1.2 Custom Model with CIFAR-10 on PyTorch </a>
+                   <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#4113-case-study-tensorflow-with-fashion-mnist">4.1.1.3 Case Study: TensorFlow with Fashion MNIST </a>
+                   <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#4114-case-study-tensorflow-with-text-classification">4.1.1.4 Case Study: TensorFlow with Text Classification </a>
+<a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#chapter-5-optimization">Chapter 5 Optimization </a>
+         <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#51-inferencing">5.1 Inferencing </a>
+                  <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#511-migraphx-introduction">5.1.1 MIGraphX Introduction </a>
+                  <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#512-migraphx-installation">5.1.2 MIGraphX Installation </a>
+                           <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#5121-option-1-installing-binaries">5.1.2.1 Option 1: Installing Binaries </a>
+                           <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#5122-option-2-building-from-source">5.1.2.2 Option 2: Building from Source </a>
+                           <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#5123-option-3-use-docker">5.1.2.3 Option 3: Use Docker </a>
+                   <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#513-migraphx-example">5.1.3 MIGraphX Example </a>
+                            <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#5131-migraphx-python-api">5.1.3.1 MIGraphX Python API </a>
+                            <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#5132-migraphx-c-api">5.1.3.2 MIGraphX C++ API </a>
+                   <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#514-tuning-migraphx">5.1.4 Tuning MIGraphX </a>
+                            <a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#5141-known-issue">5.1.4.1 Known Issue </a>
+<a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#chapter-6-troubleshooting">Chapter 6 Troubleshooting </a>
+<a href="https://github.com/anubhavamd/Deep-Learning-Updated/edit/main/README.md#chapter-7-references">Chapter 7 References </a>
+</tr>
+</td>
+</pre>
+</table1>
 
 **[Chapter 1](#_Toc105523387)****Introduction to Machine Learning and Deep Learning 4**
 
