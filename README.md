@@ -203,6 +203,16 @@ $ /opt/rocm-\&lt;version\&gt;/bin/rocminfo
 
 ## 3.1 PyTorch
 
+<table width="100%" align="center">
+ <tr width="100%" align="center">
+    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/PyTorch.png">
+ </tr>
+</table>
+
+PyTorch is an open-source Machine Learning Python library, primarily differentiated by Tensor computing with GPU acceleration and a type-based automatic differentiation. Other advanced features include support for distributed training, native ONNX support, C++ frontend, ability to deploy at scale using TorchServe, and production-ready deployment mechanism through TorchScript.
+
+Below is the PyTorch framework installation flow using different approaches. Here the flow has clickable links.
+
 ```mermaid
 flowchart LR
     PyTorch-->Install-PyTorch
@@ -222,14 +232,6 @@ flowchart LR
     click Use-PyTorch-Rocm-base-Docker-Image href "https://github.com/anubhavamd/Deep-Learning-Updated#3113-option-3-install-pytorch-using-pytorch-rocm-base-docker-image"
     click Use-PyTorch-upstream-Docker-file href "https://github.com/anubhavamd/Deep-Learning-Updated#3114-option-4-install-using-pytorch-upstream-docker-file"
 ```
-
-<table width="100%" align="center">
- <tr width="100%" align="center">
-    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/PyTorch.png">
- </tr>
-</table>
-
-PyTorch is an open-source Machine Learning Python library, primarily differentiated by Tensor computing with GPU acceleration and a type-based automatic differentiation. Other advanced features include support for distributed training, native ONNX support, C++ frontend, ability to deploy at scale using TorchServe, and production-ready deployment mechanism through TorchScript.
 
 ### 3.1.1 Installing PyTorch
 
@@ -517,6 +519,16 @@ Follow these steps:
 
 ## 3.2 TensorFlow
 
+<table width="100%" align="center">
+ <tr width="100%" align="center">
+    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/2%20Tensorflow.png">
+ </tr>
+</table>
+
+TensorFlow is an open-source library for solving problems of Machine Learning, Deep Learning, and Artificial Intelligence. It can be used to solve a large number of problems across different sectors and industries but primarily focuses on training and inference in neural networks. It is one of the most popular and in-demand frameworks, and very active in terms of open-source contribution and development.
+
+Below is the PyTorch framework installation flow using different approaches. Here the flow has clickable links.
+
 ```mermaid
 flowchart LR
     TensorFlow-->Install-TensorFlow
@@ -535,14 +547,6 @@ flowchart LR
     click Test href "https://github.com/anubhavamd/Deep-Learning-Updated#322-test-the-tensorflow-installation"
     click Run href "https://github.com/anubhavamd/Deep-Learning-Updated#323-run-a-basic-tensorflow-example"
 ```
-
-<table width="100%" align="center">
- <tr width="100%" align="center">
-    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/2%20Tensorflow.png">
- </tr>
-</table>
-
-TensorFlow is an open-source library for solving problems of Machine Learning, Deep Learning, and Artificial Intelligence. It can be used to solve a large number of problems across different sectors and industries but primarily focuses on training and inference in neural networks. It is one of the most popular and in-demand frameworks, and very active in terms of open-source contribution and development.
 
 ### 3.2.1 Installing TensorFlow
 
