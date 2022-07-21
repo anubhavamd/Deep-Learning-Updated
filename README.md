@@ -205,7 +205,7 @@ $ /opt/rocm-\&lt;version\&gt;/bin/rocminfo
 
 <table width="100%" align="center">
  <tr width="100%" align="center">
-    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/PyTorch.png">
+    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/Pytorch%2011.png">
  </tr>
 </table>
 
@@ -521,7 +521,7 @@ Follow these steps:
 
 <table width="100%" align="center">
  <tr width="100%" align="center">
-    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/2%20Tensorflow.png">
+    <td align="center"><img src="https://github.com/anubhavamd/Deep-Learning-Updated/blob/main/Model%20In.png">
  </tr>
 </table>
 
